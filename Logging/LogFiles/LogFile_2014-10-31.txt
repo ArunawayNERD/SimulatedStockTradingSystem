@@ -1,1 +1,84 @@
 [21:06:40]Testing
+[22:10:07]Stock Data updated
+[22:10:07]UserJohnnycreated a What-If Scenario created
+[22:10:07]UserJohnny successfully logged into the system 
+[22:10:07]UserJohnny failed to logged into the system 
+[22:10:07]127.0.0.1 successfully created a new account UserJohnny
+[22:10:07]0127.0.0.1 failed to create a new account.
+[22:10:07]UserJohnny successfully created a new portfolio
+[22:10:45]Stock Data updated
+[22:10:45]UserJohnnycreated a What-If Scenario created
+[22:10:45]UserJohnny successfully logged into the system 
+[22:10:45]UserJohnny failed to logged into the system 
+[22:10:45]127.0.0.1 successfully created a new account UserJohnny
+[22:10:45]0127.0.0.1 failed to create a new account.
+[22:10:45]UserJohnny successfully created a new portfolio
+[22:10:45]UserJohnny failed to created a new portfolio 
+[22:10:45]UserJohnny successfully bought 1 Google Share for 1 million dollars
+[22:10:45]UserJohnny successfully sold 1 Google Share for 1 million dollars
+[22:10:45]UserJohnny failed to buy 1 Google Share for 1 million dollars
+[22:10:45]UserJohnny failed to sell 1 Google Share for 1 million dollars
+[22:10:45]UserJohnny successfully created a competition.
+[22:10:45]UserJohnny deleted a competition.
+[22:13:12]Stock Data updated
+[22:13:12]UserJohnny created a What-If Scenario created
+[22:13:12]UserJohnny successfully logged into the system 
+[22:13:12]UserJohnny failed to logged into the system 
+[22:13:12]127.0.0.1 successfully created a new account UserJohnny
+[22:13:12]127.0.0.1 failed to create a new account.
+[22:13:12]UserJohnny successfully created a new portfolio
+[22:13:12]UserJohnny failed to created a new portfolio 
+[22:13:12]UserJohnny successfully bought 1 Google Share for 1 million dollars
+[22:13:12]UserJohnny successfully sold 1 Google Share for 1 million dollars
+[22:13:12]UserJohnny failed to buy 1 Google Share for 1 million dollars
+[22:13:12]UserJohnny failed to sell 1 Google Share for 1 million dollars
+[22:13:12]UserJohnny created a competition.
+[22:13:12]UserJohnny deleted a competition.
+[22:15:17]Starting log testing
+[22:15:17] 
+[22:15:17]Stock Data updated
+[22:15:17]UserJohnny created a What-If Scenario.
+[22:15:17]UserJohnny successfully logged into the system. 
+[22:15:17]UserJohnny failed to logged into the system. 
+[22:15:17]127.0.0.1 successfully created a new account UserJohnny
+[22:15:17]127.0.0.1 failed to create a new account.
+[22:15:17]UserJohnny successfully created a new portfolio.
+[22:15:17]UserJohnny failed to created a new portfolio.
+[22:15:17]UserJohnny successfully bought 1 Google Share for 1 million dollars
+[22:15:17]UserJohnny successfully sold 1 Google Share for 1 million dollars
+[22:15:17]UserJohnny failed to buy 1 Google Share for 1 million dollars
+[22:15:17]UserJohnny failed to sell 1 Google Share for 1 million dollars
+[22:15:17]UserJohnny created a competition.
+[22:15:17]UserJohnny deleted a competition.
+[22:16:15]Starting log testing
+[22:16:15] 
+[22:16:15]Stock Data updated
+[22:16:15]UserJohnny created a What-If Scenario.
+[22:16:15]UserJohnny successfully logged into the system. 
+[22:16:15]UserJohnny failed to logg into the system. 
+[22:16:15]127.0.0.1 successfully created a new account UserJohnny
+[22:16:15]127.0.0.1 failed to create a new account.
+[22:16:15]UserJohnny successfully created a new portfolio.
+[22:16:15]UserJohnny failed to create a new portfolio.
+[22:16:15]UserJohnny successfully bought 1 Google Share for 1 million dollars
+[22:16:15]UserJohnny successfully sold 1 Google Share for 1 million dollars
+[22:16:15]UserJohnny failed to buy 1 Google Share for 1 million dollars
+[22:16:15]UserJohnny failed to sell 1 Google Share for 1 million dollars
+[22:16:15]UserJohnny created a competition.
+[22:16:15]UserJohnny deleted a competition.
+[22:17:00]Starting log testing
+[22:17:00] 
+[22:17:00]Stock Data updated
+[22:17:00]UserJohnny created a What-If Scenario.
+[22:17:00]UserJohnny successfully logged into the system. 
+[22:17:00]UserJohnny failed to log into the system. 
+[22:17:00]127.0.0.1 successfully created a new account UserJohnny
+[22:17:00]127.0.0.1 failed to create a new account.
+[22:17:00]UserJohnny successfully created a new portfolio.
+[22:17:00]UserJohnny failed to create a new portfolio.
+[22:17:00]UserJohnny successfully bought 1 Google Share for 1 million dollars
+[22:17:00]UserJohnny successfully sold 1 Google Share for 1 million dollars
+[22:17:00]UserJohnny failed to buy 1 Google Share for 1 million dollars
+[22:17:00]UserJohnny failed to sell 1 Google Share for 1 million dollars
+[22:17:00]UserJohnny created a competition.
+[22:17:00]UserJohnny deleted a competition.
