@@ -12,11 +12,18 @@ class LoggingEngine
 {
     private $fileWriter;
 
+
+    /*
+     *  Constructs a new logging engine
+     */
     public function __construct()
     {
         $this->fileWriter = new LogFileWriter();
     }
 
+    /*
+     * Writes that the daily stock data was updated to the daily log file
+     */
     public function logStockDateUpdate()
     {
         $msg = "Stock Data updated";
@@ -24,6 +31,10 @@ class LoggingEngine
         $this->fileWriter->logMessage($msg);
     }
 
+    /*
+     * Writes that a user created a what if scenario to the daily log file
+     *
+     */
     public function logWhatIfScenario($strUser)
     {
         $msg = (String)$strUser . " created a What-If Scenario.";
@@ -31,11 +42,17 @@ class LoggingEngine
         $this->fileWriter->logMessage($msg);
     }
 
-    public function logUserLogin($strUser, $boolSuccessOrFail)
+    /*
+     * Writes to the daily log file that a user logged in
+     *
+     * param $strUser - the user to log in
+     * param $boolSuccessful - true if the log in was successful
+     */
+    public function logUserLogin($strUser, $boolSuccessful)
     {
         $msg = (String)$strUser;
 
-        if($boolSuccessOrFail === true)
+        if($boolSuccessful === true)
                $msg = $msg . " successfully logged into the system. ";
         else
                 $msg = $msg . " failed to log into the system. ";
@@ -43,11 +60,18 @@ class LoggingEngine
         $this->fileWriter->logMessage($msg);
     }
 
-    public function logUserCreation($strIP, $strUser, $boolSuccessOrFail)
+    /*
+     * Writes a message to the daily log file about an account creation
+     *
+     * param $strIP - the ip of the person making the account
+     * param $strUser - the user account to be created
+     * param $boolSuccessOrFail - true if the creation was successful
+     */
+    public function logUserCreation($strIP, $strUser, $boolSuccessful)
     {
         $msg = (String)$strIP;
 
-        if($boolSuccessOrFail === true)
+        if($boolSuccessful === true)
             $msg = $msg . " successfully created a new account " . (String)$strUser;
         else
             $msg = $msg . " failed to create a new account.";
@@ -55,12 +79,18 @@ class LoggingEngine
         $this->fileWriter->logMessage($msg);
     }
 
-
-    public function logPortActivity($strUser, $boolSuccessOrFail)
+    /*
+     * Writes a message to the daily log file about portfolio activity
+     *
+     * param $strUser - the user who created portfolio
+     * param $boolSuccessOrFail - true if the creation was successful
+     *
+     */
+    public function logPortActivity($strUser, $boolSuccessful)
     {
         $msg = (String)$strUser;
 
-        if($boolSuccessOrFail === true)
+        if($boolSuccessful === true)
             $msg = $msg . " successfully created a new portfolio.";
         else
             $msg = $msg . " failed to create a new portfolio.";
@@ -68,11 +98,19 @@ class LoggingEngine
         $this->fileWriter->logMessage($msg);
     }
 
-    public function logTransActivity($strUser, $boolSuccessOrFail, $boolBuyOrSell, $strItems)
+    /*
+     * writes a message to the daily log file about a transaction
+     *
+     * param $strUser - the user who did the transaction
+     * param $boolSuccessOrFail - true if the transaction was successful false otherwise
+     * param $boolBuyOrSell - true is the user was buying stocks. false if they are selling
+     * param $strItems - the list of items they are/tried to sell
+     */
+    public function logTransActivity($strUser, $boolSuccessful, $boolBuyOrSell, $strItems)
     {
         $msg = (String)$strUser;
 
-        if($boolSuccessOrFail === true)
+        if($boolSuccessful === true)
         {
             $msg = $msg . " successfully ";
 
@@ -96,6 +134,12 @@ class LoggingEngine
         $this->fileWriter->logMessage($msg);
     }
 
+    /*
+     * Log a message to the log file about a competition
+     *
+     * param $strUser - the user who created/deleted a comp
+     * param $boolCreateOrDelete true if a competition was created. false if it was deleted
+     */
     public function logCompActivity($strUser, $boolCreateOrDelete)
     {
         $msg = (String)$strUser;
@@ -108,6 +152,9 @@ class LoggingEngine
         $this->fileWriter->logMessage($msg);
     }
 
+    /*
+     * Log a string to the current log file.
+     */
     public function logMessage($msg)
     {
         $this->fileWriter->logMessage($msg);
