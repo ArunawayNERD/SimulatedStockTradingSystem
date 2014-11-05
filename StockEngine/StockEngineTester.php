@@ -3,7 +3,7 @@
     <?php
         require "StockApiModule.php";
 
-        pullStockData(0);
+        pullStockData();
     ?>
     </body>
 </html>

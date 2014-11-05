@@ -1,0 +1,2 @@
+MAILTO = "ssts@pluto.hood.edu"
+0 8-18 * * 1-5 /usr/local/bin/php /home/ssts (we need get the rest of the path) > /dev/null
