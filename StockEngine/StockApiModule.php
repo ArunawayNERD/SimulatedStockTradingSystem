@@ -6,32 +6,55 @@
  * Time: 1:57 PM
  */
 
-class StockApiModule
+function pullStockData($market)
 {
-    public function pullStockData($market)
+    $dLinkStart = "http://download.finance.yahoo.com/d/CurrentQuotes?s=";
+    $dLinkTickers = "";
+    $dLinkEnd = "&f=snl1oc1d1t1";
+
+    $dLinkFull = "";
+
+    $cuResource = curl_init();
+    curl_setopt($cuResource, CURLOPT_RETURNTRANSFER, 1);
+
+    cleanOldData();
+
+    if($market == 0) //nasdaq
     {
-        $dataFileLinks = array();
+        $tickerFile = fopen(".\\Tickers\\DowTickers.txt", "r"); //open the ticker file for reading
 
-        $dLinkStart = "http://download.finance.yahoo.com/d/";
-        $dLinkFileName = "";
-        $dlinkMid = "?s=";
-        $dlinkTickers = "";
-        $dLinkEnd = "&f=snl1oc1d1t1";
+        fopen(".\\StockData\\Nasdaq.csv", "a");
 
-        $dLinkFull = "";
-
-        if($market == 0) //nasdaq
-        {
-
-        }
-        else if($market = 1) //dow jones
-        {
-
-        }
-
-
-
-        return $dataFileLinks;
+//        for($i = 0; $i < $fileLength; $i++)
+//        {
+//            curl_setopt($cuResource, CURLOPT_URL,$dLinkFull);
+//        }
     }
+    else if($market = 1) //dow jones
+    {
+        fopen(".\\Tickers\\DowTickers.txt", "r"); //open the ticker file for reading
+        fopen(".\\StockData\\Dow.csv", "w");
 
-} 
+        $dLinkTickers = file_get_contents(".\\Tickers\\DowTickers.txt");
+
+        $dLinkFull = $dLinkStart . $dLinkTickers . $dLinkEnd;
+
+        curl_setopt($cuResource, CURLOPT_URL,$dLinkFull);
+
+        $returnData = curl_exec($cuResource);
+
+        file_put_contents(".\\StockData\\Dow.csv", $returnData);
+    }
+}
+
+/**
+ * If old stock data remains from last stock update delete it.
+ */
+function cleanOldData()
+{
+    if(file_exists(".\\StockData\\Nasdaq.csv"))
+        unlink(".\\StockData\\Nasdaq.csv");
+
+    if(file_exists(".\\StockData\\Dow.csv"))
+        unlink(".\\StockData\\Dow.csv");
+}
