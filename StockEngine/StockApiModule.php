@@ -30,11 +30,11 @@ function pullStockData()
     ////////////
     //Code to pull nasdaq stock data
     ///////////
-    $nasTicks = fopen(".\\Tickers\\NasdaqTickers.txt", "r"); //open the ticker file for reading
-    $nasdaq = fopen(".\\StockData\\Nasdaq.csv", "a"); //create file for all the stock data
+    $nasTicks = fopen("./Tickers/NasdaqTickers.txt", "r"); //open the ticker file for reading
+    $nasdaq = fopen("./StockData/Nasdaq.csv", "a"); //create file for all the stock data
 
     //load the ticker lines into array elements ignoring both newline chars and empty lines
-    $tickerLines = file(".\\Tickers\\NasdaqTickers.txt", FILE_IGNORE_NEW_LINES |FILE_SKIP_EMPTY_LINES);
+    $tickerLines = file("./Tickers/NasdaqTickers.txt", FILE_IGNORE_NEW_LINES |FILE_SKIP_EMPTY_LINES);
 
     for($i = 0; $i < count($tickerLines); $i++)
     {
@@ -46,17 +46,17 @@ function pullStockData()
 
         $returnData = curl_exec($yahooUrl); //send request to yahoo
 
-        file_put_contents(".\\StockData\\Nasdaq.csv", $returnData,FILE_APPEND ); //append returned data into the csv file
+        file_put_contents("./StockData//Nasdaq.csv", $returnData,FILE_APPEND ); //append returned data into the csv file
     }
 
     ////////////
     //Code to pull Dow Jones stock data
     ///////////
-    $dowTicks =fopen(".\\Tickers\\DowTickers.txt", "r"); //open the ticker file for reading
-    $dow = fopen(".\\StockData\\Dow.csv", "w"); //create file for all stock data
+    $dowTicks =fopen("./Tickers/DowTickers.txt", "r"); //open the ticker file for reading
+    $dow = fopen("./StockData/Dow.csv", "w"); //create file for all stock data
 
     //pull the tickers from the file
-    $dLinkTickers = file_get_contents(".\\Tickers\\DowTickers.txt");
+    $dLinkTickers = file_get_contents("./Tickers/DowTickers.txt");
 
     $dLinkFull = $dLinkStart . $dLinkTickers . $dLinkEnd; // build full link
 
@@ -64,7 +64,7 @@ function pullStockData()
 
     $returnData = curl_exec($yahooUrl); //send request to yahoo
 
-    file_put_contents(".\\StockData\\Dow.csv", $returnData); //put returned data in to a csv file
+    file_put_contents("./StockData/Dow.csv", $returnData); //put returned data in to a csv file
 
     //close all the open pointers
     curl_close($yahooUrl);
@@ -81,12 +81,14 @@ function pullStockData()
  */
 function cleanOldData()
 {
-    if(file_exists(".\\StockData\\Nasdaq.csv"))
-        $nasdaq = fopen(".\\StockData\\Nasdaq.csv", "w");
-
-    if(file_exists(".\\StockData\\Dow.csv"))
-        $dow = fopen(".\\StockData\\Dow.csv", "w");
-
-    fclose($nasdaq);
-    fclose($dow);
+    if(file_exists("./StockData/Nasdaq.csv"))
+    {
+       	$nasdaq = fopen("./StockData/Nasdaq.csv", "w");
+	fclose($nasdaq);
+    }
+    if(file_exists("./StockData/Dow.csv"))
+    {
+        $dow = fopen("./StockData/Dow.csv", "w");
+	fclose($dow);
+    }
 }
