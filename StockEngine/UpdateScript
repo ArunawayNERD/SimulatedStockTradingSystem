@@ -1,4 +1,5 @@
 #!/bin/bash
 
 php -r "require 'StockApiModule.php'; pullStockData();"
-mysql -u ssts -poiBi2eph < ../Db/stocksdbpop.sql
+cd StockData
+mysql -u ssts -poiBi2eph < stocksdbpop.sql
