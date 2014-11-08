@@ -46,7 +46,7 @@
   if($username!='' || $password!='') {
     if($result[0]) { 
       echo 'Valid Login';
-      header("Location: ssts/index.php");
+      header("Location: auth/index.php");
     }
     else
       echo 'Invalid Login';

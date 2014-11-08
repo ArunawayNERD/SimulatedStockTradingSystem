@@ -41,4 +41,4 @@
   $mysqli->close();
 ?>
 
-<p><a href="http://pluto.hood.edu/~mastantuono">Home</a></p>
+<p><a href="http://pluto.hood.edu/~ssts">Home</a></p>

@@ -24,7 +24,7 @@ class LoggingEngine
     /*
      * Writes that the daily stock data was updated to the daily log file
      */
-    public function logStockDateUpdate()
+    public function logStockDataUpdate()
     {
         $msg = "Stock Data updated";
 
@@ -35,7 +35,7 @@ class LoggingEngine
      * Writes that a user created a what if scenario to the daily log file
      *
      */
-    public function logWhatIfScenario($strUser)
+    public function logWhatIfScenario($User)
     {
         $msg = (String)$strUser . " created a What-If Scenario.";
 

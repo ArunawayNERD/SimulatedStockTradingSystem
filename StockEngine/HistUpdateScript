@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ../Db/
+mysql -u ssts -poiBi2eph < historydbpop.sql

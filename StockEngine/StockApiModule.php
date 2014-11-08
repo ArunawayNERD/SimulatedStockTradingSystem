@@ -46,7 +46,7 @@ function pullStockData()
 
         $returnData = curl_exec($yahooUrl); //send request to yahoo
 
-        file_put_contents("./StockData//Nasdaq.csv", $returnData,FILE_APPEND ); //append returned data into the csv file
+        file_put_contents("./StockData/Nasdaq.csv", $returnData,FILE_APPEND ); //append returned data into the csv file
     }
 
     ////////////

@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html>
- <head>
-  <title>Stocks Data</title>
- </head>
-<body>
 
-<h1> Stocks Test>
+<h1>Current Stock Prices</h1>
 
 <?php
 
 // make connection
-$conn = new mysqli("pluto.hood.edu", "ssts", "oiBi2eph", "sstsdb");
+include '../creds.php'; 
+$conn = new mysqli($host, $user, $pass, $db);
 
 // verify connection
 if ($conn->connect_error) {
@@ -23,17 +18,22 @@ $result = $conn->query("Select * from stocks;");
     echo "<table><tr>
             <th>Symbol</th>
             <th>Company Name</th>
-            <th>Last Trade Price</th>
-            <th>Price at Open</th>
+            <th>Trade Price</th>
+            <th>Opening Price</th>
             <th>Change</th>
             <th>Last Trade Date</th>
             <th>Last Trade Time</th></tr>";
     // output data of each row
     while($row = $result->fetch_assoc()) {
-      echo "<tr><td>".$row["symbol"]."</td><td>".$row["name"]."</td>
-                <td>".$row["last_trade_price"]."</td><td>".$row["open_price"]."</td>
-                <td>".$row["price_change"]."</td><td>".$row["last_trade_date"]."</td>
-                <td>".$row["last_trade_time"]."</td></tr>";
+      echo "<tr>
+        <td>".$row["symbol"]."</td>
+	<td>".$row["name"]."</td>
+        <td>".$row["last_trade_price"]."</td>
+	<td>".$row["open_price"]."</td>
+        <td>".$row["price_change"]."</td>
+	<td>".$row["last_trade_date"]."</td>
+        <td>".$row["last_trade_time"]."</td>
+      </tr>";
     }
     echo "</table>";
   } else {

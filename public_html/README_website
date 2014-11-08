@@ -1,0 +1,10 @@
+- The creds.php file contains all the database login information.
+  Its location is in public_html. If you need database access via php,
+  make sure to include 'creds.php'.  Check the file for variable names.
+
+- The public_html folder is set up so that all parts of the website
+  requiring authorized access should be put in the auth folder.
+
+- At the top of every publicly-accessible document in the auth folder,
+  include 'session.php'.  This php routine checks if the user is logged
+  in and kicks out unauthorized users.

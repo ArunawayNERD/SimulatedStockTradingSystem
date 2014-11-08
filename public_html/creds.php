@@ -1,8 +1,8 @@
 <?php
 $host = 'pluto.hood.edu';
-$user = 'mastantuono';
-$pass = 'ue4ge2Qu';
-$db = 'mastantuono';
+$user = 'ssts';
+$pass = 'oiBi2eph';
+$db = 'sstsdb';
 
 
 ?>

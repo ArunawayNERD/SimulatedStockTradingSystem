@@ -1,0 +1,5 @@
+ssts.sql creates the history database, the users database, and the stocks
+database.
+
+It's probably not normalized, but it's probably not worth looking
+into.
