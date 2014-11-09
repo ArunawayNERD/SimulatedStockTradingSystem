@@ -1,2 +1,0 @@
-MAILTO = "ssts@pluto.hood.edu"
-0 8-18 * * 1-5 cd /home/ssts/simulatedstocktradingsystem/StockEngine && sh UpdateScript > /dev/null
