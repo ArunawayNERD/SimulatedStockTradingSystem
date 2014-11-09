@@ -7,6 +7,8 @@
  * stock files from the yahoo api.
  */
 
+include "/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php";
+
 /**
  * Function to pull stock data from the yahoo api.
  *
@@ -74,6 +76,10 @@ function pullStockData()
     fclose($dowTicks);
     fclose($dow);
 
+
+   //log stock update
+   $logger = new LoggingEngine();
+   $logger->logStockDataUpdate();
 }
 
 /**

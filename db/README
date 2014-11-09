@@ -3,3 +3,6 @@ database.
 
 It's probably not normalized, but it's probably not worth looking
 into.
+
+All fields in the stock database are VARCHARS, because Yahoo Finance
+sets fields to N/A if no data is available.

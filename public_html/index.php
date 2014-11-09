@@ -21,8 +21,14 @@
     $_SESSION['id'] = $result[0];
     $_SESSION['username'] = $result[1];
     $_SESSION['password'] = $result[2];
+  
+    // to log logins
+    include 
+    '/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php';
+    $log=new LoggingEngine();
+    $log->logUserLogin($_SESSION['username']);
   }
-
+  
   $mysqli->close();
 ?>
 
@@ -54,7 +60,6 @@
 ?>
 
 <p><a href="registration.php">Register</a></p>
-
 
 </body>
 

@@ -6,7 +6,7 @@
  * Time: 11:10 PM
  */
 
-require "LogFileWriter.php";
+include "/home/ssts/simulatedstocktradingsystem/Logging/LogFileWriter.php";
 
 class LoggingEngine
 {
@@ -18,7 +18,7 @@ class LoggingEngine
      */
     public function __construct()
     {
-        $this->fileWriter = new LogFileWriter();
+       $this->fileWriter = new LogFileWriter();
     }
 
     /*
@@ -35,9 +35,9 @@ class LoggingEngine
      * Writes that a user created a what if scenario to the daily log file
      *
      */
-    public function logWhatIfScenario($User)
+    public function logWhatIfScenario($user)
     {
-        $msg = (String)$strUser . " created a What-If Scenario.";
+        $msg = (String)$user . " created a What-If Scenario.";
 
         $this->fileWriter->logMessage($msg);
     }
@@ -46,36 +46,42 @@ class LoggingEngine
      * Writes to the daily log file that a user logged in
      *
      * param $strUser - the user to log in
-     * param $boolSuccessful - true if the log in was successful
      */
-    public function logUserLogin($strUser, $boolSuccessful)
+    public function logUserLogin($user)
     {
-        $msg = (String)$strUser;
+        $msg = (String)$user;
 
-        if($boolSuccessful === true)
-               $msg = $msg . " successfully logged into the system. ";
-        else
-                $msg = $msg . " failed to log into the system. ";
-
+        $msg = $msg . " logged into the system. ";
+       
         $this->fileWriter->logMessage($msg);
     }
+
+    /**
+    * Writes a message to the log fle when a user logs off the system
+    *
+    * param $user - the user who logged out.
+    *
+    */
+    public function logUserLogout($user)
+    {
+	$msg = (String)$user;
+
+	$msg = $msg . " logged out.";
+
+	$this->logMessage($msg);
+    }
+
 
     /*
      * Writes a message to the daily log file about an account creation
      *
-     * param $strIP - the ip of the person making the account
      * param $strUser - the user account to be created
-     * param $boolSuccessOrFail - true if the creation was successful
      */
-    public function logUserCreation($strIP, $strUser, $boolSuccessful)
+    public function logUserRegistration($user)
     {
-        $msg = (String)$strIP;
-
-        if($boolSuccessful === true)
-            $msg = $msg . " successfully created a new account " . (String)$strUser;
-        else
-            $msg = $msg . " failed to create a new account.";
-
+    	$msg = "";
+        $msg = $msg . "New account created: " . (String)$user;
+        
         $this->fileWriter->logMessage($msg);
     }
 
@@ -83,18 +89,14 @@ class LoggingEngine
      * Writes a message to the daily log file about portfolio activity
      *
      * param $strUser - the user who created portfolio
-     * param $boolSuccessOrFail - true if the creation was successful
      *
      */
-    public function logPortActivity($strUser, $boolSuccessful)
+    public function logPortCreation($user)
     {
         $msg = (String)$strUser;
 
-        if($boolSuccessful === true)
-            $msg = $msg . " successfully created a new portfolio.";
-        else
-            $msg = $msg . " failed to create a new portfolio.";
-
+        $msg = $msg . " created a new portfolio.";
+       
         $this->fileWriter->logMessage($msg);
     }
 
@@ -106,9 +108,9 @@ class LoggingEngine
      * param $boolBuyOrSell - true is the user was buying stocks. false if they are selling
      * param $strItems - the list of items they are/tried to sell
      */
-    public function logTransActivity($strUser, $boolSuccessful, $boolBuyOrSell, $strItems)
+    public function logTransaction($user, $boolSuccessful, $boolBuyOrSell, $strItems)
     {
-        $msg = (String)$strUser;
+        $msg = (String)$user;
 
         if($boolSuccessful === true)
         {
@@ -140,9 +142,9 @@ class LoggingEngine
      * param $strUser - the user who created/deleted a comp
      * param $boolCreateOrDelete true if a competition was created. false if it was deleted
      */
-    public function logCompActivity($strUser, $boolCreateOrDelete)
+    public function logCompActivity($user, $boolCreateOrDelete)
     {
-        $msg = (String)$strUser;
+        $msg = (String)$user;
 
         if($boolCreateOrDelete === true)
             $msg = $msg . " created a competition.";

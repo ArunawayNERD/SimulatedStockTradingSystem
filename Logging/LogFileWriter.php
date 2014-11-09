@@ -34,8 +34,6 @@ class LogFileWriter
     {
         $this->time = $this->getTime();
         $this->date = $this->getDate();
-
-        date_default_timezone_set ("America/New_York");
     }
 
     /**
@@ -48,12 +46,13 @@ class LogFileWriter
     public function logMessage($msg)
     {
         $logFile = $this->makeLogFile();
-
+	
+	
         //add time stamp to the msg.
         $msg = "[" . $this->time[3] . "]" . $msg ."\n";
-
+	
         fwrite($logFile, $msg);
-
+	fclose($logFile);
     }
 
     /**
@@ -61,7 +60,11 @@ class LogFileWriter
      */
     private function makeLogFile()
     {
-        return fopen(".\\LogFiles\\LogFile_".$this->date[3].".txt", "a+");
+    	$filename = "/home/ssts/simulatedstocktradingsystem/Logging/LogFiles/LogFile_" . $this->date[3]. ".txt";
+
+        $logfile =  fopen($filename, "a+"); 
+
+	return $logfile;
     }
 
     /**
@@ -75,7 +78,6 @@ class LogFileWriter
         date_default_timezone_set('America/New_York');
         $currentDate = date("Y-m-d");
 
-        echo("CurrentDate " . $currentDate);
         $date = explode('-', $currentDate);
 
         $date[3] = $currentDate;
@@ -93,7 +95,6 @@ class LogFileWriter
         date_default_timezone_set('America/New_York');
         $currentTime = date("H:i:s");
 
-        echo("CurrentTime " . $currentTime);
         $time = explode('-', $currentTime);
 
         $time[3] = $currentTime;

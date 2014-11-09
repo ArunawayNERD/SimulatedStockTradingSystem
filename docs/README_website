@@ -7,4 +7,10 @@
 
 - At the top of every publicly-accessible document in the auth folder,
   include 'session.php'.  This php routine checks if the user is logged
-  in and kicks out unauthorized users.
+  in and kicks out unauthorized users.  The include statement
+  must be included before any other code or html; otherwise, it will not
+  work.
+
+- Include logout.php on every publicly-accessible page located
+  in the auth folder. This routine deallocates all session variables,
+  returns the page to the login, and deactivates any cookies.
