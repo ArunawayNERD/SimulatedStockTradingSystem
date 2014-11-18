@@ -1,10 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>SSTS - Register</title>
 
-<!--    Registration Form             -->
-<form method="post" action="registration.php"> 
-  Username: <input type="text" name="username" />
-  Password: <input type="password" name="password" />
-  	    <input type="submit">
-</form>
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="signin.css" rel="stylesheet">
+</head>
+
+<body>
+
+<img src="ssts_logo.png" class="logo" width="240" height="144"/>
+
+<h1 class="form-signin-heading">Simulated Stock <br/>Trading System</h1>
+
 <?php
   // include the proper logging mechanisms
   include 
@@ -34,7 +43,7 @@
     $stmt->fetch();
     $stmt->close();
     if($result)
-      echo $username . ' has already registered.';
+      echo '<span class="signin-message">' . $username . ' has already registered.</span>';
     else {
       // add new username to database
       $token=hash('ripemd128', "$username$password");
@@ -46,13 +55,22 @@
       // logs the new users
       $log=new LoggingEngine();
       $log->logUserRegistration($username);
-      echo 'Thank you, ' . $username . ', for registering.';
+      echo '<span class="signin-message">Thank you, ' . $username . ', for registering.</span>';
     }
   } else {
-    echo 'Please complete the form.';
+    echo '<span class="signin-message">Please complete the form.</span>';
   }
   $mysqli->close();
 ?>
 
+<!--    Registration Form             -->
+<form method="post" action="registration.php" class="form-signin"> 
+   <input type="text" name="username" class="form-control" placeholder="Username" required autofocus/> <br/>
+   <input type="password" name="password" class="form-control" placeholder="Password" required/> <br/>
+   <input type="submit" class="btn btn-lg btn-primary btn-block">
+</form>
+
 <!-- Link to the login page           --> 
-<p><a href="http://pluto.hood.edu/~ssts">Home</a></p>
+<p class="signin-message"><a href="http://pluto.hood.edu/~ssts">Home</a></p>
+</body>
+</html>

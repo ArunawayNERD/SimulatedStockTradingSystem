@@ -1,0 +1,82 @@
+body {
+   padding-top: 50px;
+}
+
+.wrapper {
+   padding: 0px 40px;
+}
+
+.navbar-default {
+   background-color: #01323D;
+}
+
+.navbar-default .navbar-nav > li > a {
+   color: white;
+}
+
+.navbar-default .navbar-nav > .active > a {
+   background-color: #fff;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #D4D4D4;
+  background-color: transparent;
+}
+
+.navbar-brand {
+   max-height: 70px;
+   padding: 0px;
+   margin-right: 15px;
+   width: auto;
+}
+
+#home-activestats {
+   width: 500px;
+   float: left;
+   margin: 20px;
+}
+
+#home-leaderboard, #home-compbox {
+   width: 500px;
+   float: right;
+   margin: 20px;
+}
+
+#stocks-wrapper {
+   text-align: center;
+}
+
+.stocks-wrapper {
+   display: inline-block;
+   margin: 0 auto;
+}
+
+.table-hover tbody tr:hover td {
+  background-color: #5DA2B2;
+  font-weight: bold;
+  }
+
+#alphabet {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+}
+
+#alphabet li {
+   float: left;
+}
+
+#alphabet li a {
+   display: block;
+   width: 20px;
+}
+
+.stocks-nav { 
+   margin: 0 auto;
+   width: 550px;
+}
+
+.panel-default > .panel-title {
+   background-color: #5DA2B2;
+}

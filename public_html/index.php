@@ -35,31 +35,36 @@
 <!doctype html>
 <html>
 <head>
-  <title>SSTS</title> 
+  <title>SSTS</title>
+
+  <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="signin.css" rel="stylesheet"> 
 </head>
 <body>
 
-<h1>SSTS</h1>
+<img src="ssts_logo.png" class="logo" width="240" height="144"/>
 
-
-<form method="post" action="index.php"> 
-  Username: <input type="text" name="username" /> <br />
-  Password: <input type="password" name="password" /> <br />
-  	    <input type="submit" value="Login">
-</form>
-
+<h1 class="form-signin-heading">Simulated Stock <br/>Trading System</h1>
 <?php
   if($username!='' || $password!='') {
-    if($result[0]) { 
-      echo 'Valid Login';
-      header("Location: auth/index.php");
-    }
-    else
-      echo 'Invalid Login';
-  }
+      if($result[0]) { 
+         echo 'Valid Login';
+	 header("Location: auth/index.php");
+      }
+      else
+         echo '<span class="signin-message">Invalid Login</span>';
+      }
 ?>
 
-<p><a href="registration.php">Register</a></p>
+<form method="post" action="index.php" class="form-signin"> 
+  <input type="text" name="username" class="form-control" placeholder="Username" required autofocus/> <br />
+  <input type="password" name="password" class="form-control" placeholder="Password" required/> <br />
+  <input type="submit" value="Login" class="btn btn-lg btn-primary btn-block">
+</form>
+<div class="signin-options">
+<p class="split-para"><a href="">Forgot Login?</a><span><a href="registration.php">Register</a></span></p>
+</div>
 
 </body>
 
