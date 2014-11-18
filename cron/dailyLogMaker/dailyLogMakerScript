@@ -1,3 +1,4 @@
 #!/bin/bash
 
-php dailyLogMaker.php
+cd /home/ssts/simulatedstocktradingsystem/cron/dailyLogMaker
+php -r "require 'dailyLogMaker.php'; makeLogFile();"

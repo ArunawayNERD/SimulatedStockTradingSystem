@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd /home/ssts/simulatedstocktradingsystem/StockEngine
 php -r "require 'StockApiModule.php'; pullStockData();"
 cd /home/ssts/simulatedstocktradingsystem/StockEngine/StockData
 mysql -u ssts -poiBi2eph < stocksdbpop.sql
