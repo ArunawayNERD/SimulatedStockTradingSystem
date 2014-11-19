@@ -16,5 +16,17 @@ class Stock
 
 		if($num < 0)
 			throw new InvalidArgumentException("Number of shares must be greater than or equal to 0. Input was: " . $num);
+		
+		$this->numShares = $num;
+	}
+
+	public function getStockName()
+	{
+		return (String)$this->stockName;
+	}
+
+	public function getNumShares()
+	{
+		return	(String) $this->numShares;
 	}
 }
