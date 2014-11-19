@@ -24,13 +24,14 @@
        <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
              <li><a href="index.php">Home</a></li>
-             <li><a href="">About</a></li>
-             <li class="active"><a href="">Stocks</a></li>
              <li><a href="">Portfolios</a></li>
              <li><a href="">Competitions</a></li>
+			 <li class="active"><a href="">Stocks</a></li>
              <li><a href="">What-If</a></li>
          </ul>
 	 <ul class="nav navbar-nav navbar-right">
+	    <li class="navbar-text"><?php echo 'Welcome ' . $_SESSION['username'];?></li>
+		<li><a href="">Settings</a></li>
 	    <li><form method="post" action="logout.php">
 	       <button type="submit" value="Log out" class="btn btn-default navbar-btn">Log out</button>
 	       </form></li>
@@ -117,6 +118,14 @@ $result = $conn->query("Select * from stocks;");
 $conn->close();
 ?>
 </div>
+<footer class="footer">
+   <div class="container">
+      <p class="text-muted"><small>Created by Team UG-2</small></p>
+	  <p class="text-muted"><small><a href="">About</a></small></p>
+   </div>
+</footer>
+
+
 </div>
 
    <!-- Bootstrap core JavaScript -->

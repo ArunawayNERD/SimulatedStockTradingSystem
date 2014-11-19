@@ -24,13 +24,14 @@
        <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
              <li class="active"><a href="index.php">Home</a></li>
-             <li><a href="">About</a></li>
-             <li><a href="stocks.php">Stocks</a></li>
              <li><a href="">Portfolios</a></li>
              <li><a href="">Competitions</a></li>
+			 <li><a href="stocks.php">Stocks</a></li>
              <li><a href="">What-If</a></li>
          </ul>
 	 <ul class="nav navbar-nav navbar-right">
+	    <li class="navbar-text"><?php echo 'Welcome ' . $_SESSION['username'];?></li>
+		<li><a href="">Settings</a></li>
 	    <li><form method="post" action="logout.php">
 	       <button type="submit" value="Log out" class="btn btn-default navbar-btn">Log out</button>
 	       </form></li>
@@ -40,18 +41,13 @@
 </nav>
 
 <div class="wrapper">
-<h1>
-<?php
-  echo 'Welcome ' . $_SESSION['username'];
-?>
-</h1>
 
 <div class="panel panel-default" id="home-activestats">
   <div class="panel-heading">
      <h3 class="panel-title">Active Portfolio Stats</h3>
   </div>
   <div class="panel-body">
-     Stuff
+    Placeholder 
   </div>
 </div>
 
@@ -60,7 +56,7 @@
       <h3 class="panel-title">Leaderboard</h3>
    </div>
    <div class="panel-body">
-      Stuff
+      Placeholder
    </div>
 </div>
 
@@ -69,11 +65,18 @@
       <h3 class="panel-title">Your Competitions</h3>
    </div>
    <div class="panel-body">
-      Stuff
+      Placeholder
    </div>
 </div>
 
 </div>
+
+<footer class="footer">
+   <div class="container">
+      <p class="text-muted"><small>Created by Team UG-2</small></p>
+	  <p class="text-muted"><small><a href="">About</a></small></p>
+   </div>
+</footer>
 
 </div>
 
@@ -81,6 +84,5 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="../dist/js/bootstrap.min.js"></script>
-
 </body>
 </html>
