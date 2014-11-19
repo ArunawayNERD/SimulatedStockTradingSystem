@@ -29,4 +29,13 @@ class Stock
 	{
 		return	(String) $this->numShares;
 	}
+
+	public function toString()
+	{
+		$stringForm = "";
+
+		$stringForm = $this->getStockName() . "," . $this->getNumShares() . ";";
+
+		return $stringForm;
+	}
 }
