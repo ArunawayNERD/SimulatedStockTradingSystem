@@ -7,12 +7,14 @@
 
 class Stock
 {
-	private $stockName = "";
+	private $stockSymbol = "";
+	private $stockName = "";	
 	private $numShares = 0;
 
-	public function __construct($name, $num)
+	public function __construct($symbol, $name, $num)
 	{
 		$this->stockName = $name;
+		$this->stockSymbol = $symbol;
 
 		if($num < 0)
 			throw new InvalidArgumentException("Number of shares must be greater than or equal to 0. Input was: " . $num);
@@ -27,14 +29,19 @@ class Stock
 
 	public function getNumShares()
 	{
-		return	(String) $this->numShares;
+		return	(int) $this->numShares;
 	}
 
+	public function getStockSymbol()
+	{
+		return (String) $this->stockSymbol();
+	}
+	
 	public function toString()
 	{
 		$stringForm = "";
 
-		$stringForm = $this->getStockName() . "," . $this->getNumShares() . ";";
+		$stringForm = $this->stockSymbol . "," . $this->getStockName() . "," . $this->getNumShares() . ";";
 
 		return $stringForm;
 	}
