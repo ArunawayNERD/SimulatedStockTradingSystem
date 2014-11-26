@@ -1,46 +1,4 @@
-<?php include 'session.php' ?>
-<!doctype html>
-<html>
-<head>
-  <title>SSTS - Stocks</title> 
-
-  <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="navbar-fixed-top.css" rel="stylesheet">
-
-</head>
-<body>
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
-       <div class="navbar-header">
-           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-           </button>
-           <img class="navbar-brand" src="../ssts_logo.png" width="50" height="30"/>
-       </div>
-       <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-             <li><a href="index.php">Home</a></li>
-             <li><a href="">Portfolios</a></li>
-             <li><a href="">Competitions</a></li>
-			 <li class="active"><a href="">Stocks</a></li>
-             <li><a href="">What-If</a></li>
-         </ul>
-	 <ul class="nav navbar-nav navbar-right">
-	    <li class="navbar-text"><?php echo 'Welcome ' . $_SESSION['username'];?></li>
-		<li><a href="">Settings</a></li>
-	    <li><form method="post" action="logout.php">
-	       <button type="submit" value="Log out" class="btn btn-default navbar-btn">Log out</button>
-	       </form></li>
-	 </ul>
-      </div><!--/.nav-collapse -->
-   </div>
-</nav>
-
-<div class="wrapper" id="stocks-wrapper">
+<div id="stocks-wrapper">
 <div class="stocks-wrapper">
 <h1>Current Stock Prices</h1>
 
@@ -90,7 +48,7 @@ if ($conn->connect_error) {
 $result = $conn->query("Select * from stocks;");
 
   if ($result->num_rows > 0) {
-    echo "<table class='table table-striped table-hover'><thead><tr>
+    echo "<table class='table table-striped table-hover tablesorter' id='stocks'><thead><tr>
             <th>Symbol</th>
             <th>Company Name</th>
             <th>Trade Price</th>
@@ -117,34 +75,6 @@ $result = $conn->query("Select * from stocks;");
 
 $conn->close();
 ?>
-</div>
-<footer class="footer">
-   <div class="container">
-      <p class="text-muted"><small>Created by Team UG-2</small></p>
-	  <p class="text-muted"><small><a href="">About</a></small></p>
-   </div>
-</footer>
-
 
 </div>
-
-   <!-- Bootstrap core JavaScript -->
-   <!-- Placed at the end of the document so the pages load faster -->
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-   <script src="../dist/js/bootstrap.min.js"></script>
-   <script>
-      $('#alphabet').on('click', 'li a', function() {
-      if ($(this).text() == 'All') { //Show all of the stocks
-         $('tbody > tr').show();
-      }
-      else {
-      $('tbody > tr').show(); //Show all the stocks to reset
-      // Grab the letter that was clicked
-      var sCurrentLetter = $(this).text();
-      // Now hide all rows that have IDs that do not start with this letter
-      $('tbody > tr:not( [id^="' + sCurrentLetter + '"] )').hide();
-      }
-   });
-   </script>
-</body>
-</html>
+</div>

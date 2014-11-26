@@ -1,0 +1,152 @@
+/*Body Styles*/
+.wrapper {
+   position: relative;
+   padding: 60px 40px;
+   padding-bottom: 60px;
+}
+
+/*Nav Bar Styles*/
+.navbar-default {
+   background-color: #01323D;
+}
+
+.navbar-default .navbar-nav > li > a {
+   color: white;
+}
+
+.navbar-default .navbar-nav > .active > a {
+   background-color: #fff;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #D4D4D4;
+  background-color: transparent;
+}
+
+.navbar-brand {
+   max-height: 70px;
+   padding: 0px;
+   margin-right: 15px;
+   width: auto;
+}
+
+/*Footer Styles*/
+.footer {
+   text-align: left;
+   position: absolute;
+   clear: both;
+   bottom: 0;
+   left: 0;
+   right:0;
+   width: 100%;
+   /* Set the fixed height of the footer here */
+   height: 60px;
+   background-color: #01323D;
+}
+	
+.footer .container {
+   position: relative;
+   top: 50%;
+   transform: translateY(-50%);
+}
+
+.footer .container .text-muted {
+   color: white;
+   margin: 0px 0px;
+}
+
+.footer .container .text-muted a {
+   color: #5DA2B2;
+}
+
+.footer .container .text-muted a:hover {
+   text-decoration: underline;
+   color: white;
+}
+
+/*Home Page Styles*/
+.panel-default > .panel-heading {
+   background-color: #5DA2B2;
+   color: #fff;
+}
+
+#home-activestats {
+   width: 550px;
+   float: left;
+   margin: 20px;
+}
+
+#home-leaderboard, #home-compbox {
+   width: 550px;
+   float: right;
+   margin: 20px;
+}
+
+@media (max-width: 1260px) and (min-width: 680px) {
+   #home-activestats, #home-leaderboard, #home-compbox {
+      float: none;
+      margin: 20px auto;
+   }
+}
+
+@media (max-width: 680px) {
+   #home-activestats, #home-leaderboard, #home-compbox {
+      float: none;
+      margin: 20px auto;
+      width: 100%;
+   }
+}
+
+/*Stocks Page Styles*/
+#stocks-wrapper {
+   text-align: center;
+}
+
+.stocks-wrapper {
+   display: inline-block;
+   margin: 0 auto;
+}
+
+.table-hover tbody tr:hover td {
+  background-color: #5DA2B2;
+  font-weight: bold;
+}
+
+#stocks thead th {
+   text-align: center;
+}
+
+table.tablesorter thead tr th.headerSortUp {
+   background-image: url("imgs/black-asc.gif");
+   background-repeat: no-repeat;
+   background-position: center right;
+}
+table.tablesorter thead tr th.headerSortDown {
+   background-image: url("imgs/black-desc.gif");
+   background-repeat: no-repeat;
+   background-position: center right;
+}
+
+#alphabet {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+}
+
+#alphabet li {
+   float: left;
+}
+
+#alphabet li a {
+   display: block;
+   width: 20px;
+}
+
+.stocks-nav { 
+   margin: 0 auto;
+   width: 550px;
+}
+
+/*Portfolios Page Styles*/
+

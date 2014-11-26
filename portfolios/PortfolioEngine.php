@@ -1,7 +1,7 @@
 <?php
 
 /**
-* implements a portfolio objet which holds values for cash, stock, etc
+* Provides methods that allow other parts of the system to get and change data in the portfolio database
 * created by John Pigott
 */
 
@@ -23,10 +23,226 @@ function connectDB()
 	return $mysqli;
 }
 
+/** 
+	Buys a numbers of stock
+
+	$uid - the users id
+	$name - name of the portfolio to update
+	$symbol - ticker for the stock to be updated
+	$num - the ammount of stocks to buy
+
+	returns  0 nothing updated becuase change ammount < 1
+		 1 added  the num shares
+		 2 added nums shares and added symbol into table
+*/
+function buyStockAmmount($uid, $name, $symbol, $num)
+{
+	if(is_float($num) || is_double($num))
+		$num = (int)$num;
+
+	if(!is_int($num))
+		throw new InvalidArgumentException('$num must be an int');
+
+	if($num < 1)
+	{
+		return 0;
+	}
+
+
+	$currentTotal = 0;
+	$newTotal = 0;
+
+	$mysqli = connectDB();
+
+
+	//get current shares
+	$request = $mysqli->prepare('select stocks from portfolioStocks where uid=? and name=? and symbol=?');
+	$request->bind_param("iss", $uid, $name, $symbol);
+	$request->execute();
+	$request->bind_result($currentTotal);
+	$request->fetch();
+	$request->close();
+
+	if(is_null($currentTotal)) //if the portfolio does not have the symbol add it
+	{
+		$request = $mysqli->prepare('insert into portfolioStocks(uid, name, symbol, stocks) values(?, ?, ?, ?)');
+		$request->bind_param("issi", $uid, $name, $symbol, $num);
+		$request->execute();
+		$request->close();
+
+		return 2;
+	}
+
+	$newTotal = $currentTotal + $num;
+
+	$request = $mysqli->prepare('update portfolioStocks set stocks=? where uid=? and name=? and symbol=?');
+	$request->bind_param("iiss", $newTotal, $uid, $name, $symbol);
+	$request->execute();
+	$request->close();
+
+	$mysqli->close();
+
+	return 1;
+}
+
+
+/**
+	sells a number of stocks owned
+
+	$uid - the users id 
+	$name - the portfolio who owns the stocks 
+	$symbol - the stock ticker to update
+	$num - the ammount of stocks 
+
+
+	returns -2 if num is less than or equal to 0. you cant sell a negative ammount of stocks
+		-1 if the portfolio does not have the symbol.
+	         0 no chnage becuase the new total would be below 0
+		 1 stock ammount chnaged
+		 2 new total was 0 and stock deleted from table
+*/
+function sellStockAmmount($uid, $name, $symbol, $num)
+{
+	if(is_float($num) || is_double($num))
+		$num = (int)$num;
+
+	if(!is_int($num))
+		throw new InvalidArgumentException('$num  must be an int');
+
+	if($num < 1)
+		return -2;
+
+	$currentTotal = 0;
+	$newNum = 0;
+
+	$mysqli = connectDB();
+
+	//get how many stocks are currently owned by the user.
+	$request = $mysqli->prepare('select stocks from portfolioStocks where uid=? and name=? and symbol=?');
+	$request->bind_param("iss", $uid, $name, $symbol);
+	$request->execute();
+	$request->bind_result($currentTotal);
+	$request->fetch();
+	$request->close();
+
+	if(is_null($currentTotal))
+	{
+		$mysqli->close();
+
+		return -1;
+	}
+
+	$newNum = $currentTotal - $num;
+
+	if($newNum < 0)
+	{
+		$mysqli->close();
+
+		return 0;
+	}
+
+	if($newNum == 0) //if the new total is 0 delete from the table
+	{
+		$request = $mysqli->prepare('delete from portfolioStocks where uid=? and name=? and symbol=?');
+		$request->bind_param('iss', $uid, $name, $symbol);
+		$request->execute();
+		$request->close();
+		$mysqli->close();
+
+		return 2;
+	}
+
+	$request = $mysqli->prepare('update portfolioStocks set stocks=? where uid=? and name=? and symbol=?');
+	$request->bind_param("diss", $newNum, $uid, $name, $symbol);
+	$request->execute();
+	
+	$request->close();
+	$mysqli->close();
+
+	return 1;
+}
+
+
+/**
+    Delete a portfolio from the database.
+
+    returns 0 if the portfolio does not exist.
+            1 is the portfolio was deleted
+*/
+function deletePortfolio($uid, $name)
+{
+	$result = "";
+
+	$mysqli = connectDB();
+
+
+	//check if a portfolio with that name is owned by the user
+	$request = $mysqli->prepare("select name from portfolios where uid=? and name=?");
+	$request->bind_param("is", $uid, $name);
+	$request->execute();
+	$request->bind_result($result);
+	$request->fetch();
+
+	if(is_null($result))
+	{
+		$request->close();
+		$mysqli->close();
+
+		return 0;
+	}
+	
+	$request->close();//close the previous request so it doesnt interfere
+
+	$request = $mysqli->prepare("delete from portfolios where uid=? and name=?");
+	$request->bind_param("is", $uid, $name);
+	$request->execute();
+
+	$request->close();
+	$mysqli->close();
+
+	return 1;
+}
+
+
+/**
+   Chnages the ammount of cash a portfolio has by the ammount of the paramter $change
+
+   returns -1 if a portfolio with $uid and/or the $name does not exist
+           0 if the change ammount would put the total money below 0. (does not chnage the cash value in this case)
+	   1 if the cash was changed by the ammount in $change
+*/
+function adjustPortfolioCash($uid, $name, $change)
+{
+	if(is_double($change) || is_int($change))
+		$change = (float)$change;
+
+	if(!is_float($change))
+		throw new InvalidArgumentException("cash change must be floating point");
+
+	$oldCash = 0;
+	$newCash = 0;
+
+
+	$oldCash = getPortfolioCash($uid, $name);
+
+	if(is_null($oldCash))
+		return -1;
+
+	$newCash = $oldCash + $change;
+
+	if($newCash < 0)
+		return 0;
+
+	setPortfolioCash($uid, $name, $newCash);
+
+	return 1;
+}
+
 /**
 	sets the ammount of cash a portfolio has.
 
-	return
+	return - 0 if the the action failed due to the user not having a portfolio with the supplied name.
+	       - 1 if the portfolio's cash was sucessfuly changed.
 */
 function setPortfolioCash($uid, $name, $cash)
 {
@@ -34,18 +250,36 @@ function setPortfolioCash($uid, $name, $cash)
 
 	$mysqli = connectDB();
 
+	if(is_double($cash)|| is_int($cash))
+		$cash = (float)$cash;
+	
 	if(!is_float($cash))
-	{
+		throw new InvalidArgumentException("Cash must be floating point");
 
-	}
-
-
+	//check that the user has a portfolio with that name
 	$request = $mysqli->prepare("select name from portfolios where uid=? and name=?");
 	$request->bind_param("is", $uid, $name);
 	$request->execute();
-	$request->bind_result($result
+	$request->bind_result($result);
+	$request->fetch();
 
+	if(is_null($result))
+	{
+		$mysqli->close();
+		$request->close();
+		return 0;
+	}
 
+	
+	$request->close();
+	$request = $mysqli->prepare("update portfolios set cash=? where uid=? and name=?");
+	$request->bind_param("dis", $cash, $uid, $name);
+	$request->execute();
+	
+	$request->close();
+	$mysqli->close();
+
+	return 1;
 }
 
 /**
@@ -143,8 +377,9 @@ function makeNewPortfolio($uid, $name)
 	//log portfolio creation.
 	$logger = new LoggingEngine();
 	$logger->logPortCreation("User ID: " . $uid);
-		
-}	return true;
+
+	return true;
+}
 
 
 
@@ -284,7 +519,7 @@ function getAllStocks($uid, $name)
     returns - the cash ammount of the portfolio
 
 */
-function getCash($uid, $portName)
+function getPortfolioCash($uid, $portName)
 {
 	$cash = 0;
 
@@ -296,7 +531,7 @@ function getCash($uid, $portName)
 	$request->bind_result($cash);
 	$request->fetch();
 
-
+	
 	//free system resources
 	$request->close();
 	$mysqli->close();

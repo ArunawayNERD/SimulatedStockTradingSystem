@@ -1,0 +1,8 @@
+ZNGA
+MMM
+
+Cat all into one
+get rid of csv from strings
+load into table
+cleanup
+

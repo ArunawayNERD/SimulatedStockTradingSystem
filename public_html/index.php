@@ -9,7 +9,7 @@
   if($mysqli->connect_error)
     die($mysqli->connect_error);
 
-  $stmt=$mysqli->prepare('select * from users
+  $stmt=$mysqli->prepare('select id, username, password from users
     where username=? and password=?');
   $stmt->bind_param('ss', $username, $saltedPass);
   $stmt->execute();
@@ -21,7 +21,7 @@
     $_SESSION['id'] = $result[0];
     $_SESSION['username'] = $result[1];
     $_SESSION['password'] = $result[2];
-  
+    $_SESSION['active_portfolio'] = $result[1]; 
     // to log logins
     include 
     '/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php';
@@ -35,7 +35,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>SSTS</title>
+  <title>SSTS - Login</title>
 
   <link href="dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -63,7 +63,7 @@
   <input type="submit" value="Login" class="btn btn-lg btn-primary btn-block">
 </form>
 <div class="signin-options">
-<p class="split-para"><a href="">Forgot Login?</a><span><a href="registration.php">Register</a></span></p>
+<p class="split-para"><a href="recover_login.php">Forgot Login?</a><span><a href="registration.php">Register</a></span></p>
 </div>
 
 </body>

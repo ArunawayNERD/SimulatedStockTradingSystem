@@ -93,7 +93,7 @@ class LoggingEngine
      */
     public function logPortCreation($user)
     {
-        $msg = (String)$strUser;
+        $msg = (String)$user;
 
         $msg = $msg . " created a new portfolio.";
        
