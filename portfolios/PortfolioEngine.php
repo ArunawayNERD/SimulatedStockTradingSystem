@@ -23,6 +23,25 @@ function connectDB()
 	return $mysqli;
 }
 
+/**
+	Sets a users active portfolio
+
+
+*/
+function setActivePortfolio($uid, $name)
+{
+	$mysqli = connectDB();
+
+	$request = $mysqli->prepare('update activePortfolio set name=? where uid=?');
+	$request->bind_param("si", $name, $uid);
+	$request->execute();
+
+	$request->close();
+	$mysqli->close();
+
+	return 1;
+}
+
 /** 
 	Buys a numbers of stock
 

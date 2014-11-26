@@ -53,9 +53,25 @@
       $stmt->execute();
       $stmt->close();
 
+      // make default active portfolio
+      // get user id
+      $stmt=$mysqli->prepare("select id from users where username=?");
+      $stmt->bind_param('s', $username);
+      $stmt->execute();
+      $stmt->bind_result($id);
+      $stmt->fetch();
+      $stmt->close();
+
+      // now add to active portfolio database
+      $stmt=$mysqli->prepare("insert into activePortfolio (uid, name) values (?,?)");
+      $stmt->bind_param('ss', $id, $username);
+      $stmt->execute();
+      $stmt->close(); 
+
       // logs the new users
       $log=new LoggingEngine();
       $log->logUserRegistration($username);
+      header("Location: index.php");
       echo '<span class="signin-message">Thank you, ' . $username . ', for registering.</span>';
     }
   } else {

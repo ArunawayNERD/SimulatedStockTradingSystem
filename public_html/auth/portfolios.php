@@ -1,5 +1,7 @@
-
 <?php
+//  include 
+//    '/home/ssts/simulatedstocktradingsystem/portfolios/PortfolioEngine.php';
+
   // include the proper logging mechanisms
   include 
     '/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php';
@@ -21,6 +23,16 @@
   //get portfolios from database that match the user id
   $result=$mysqli->query("select name, cash from portfolios
     where uid=$uid");
+  
+  //Sidebar
+  if($result->num_rows > 0) {
+    echo "<div class='col-sm-3 col-md-2 sidebar'>";
+    echo "<ul class='nav nav-sidebar'>";
+    while($row = $result->fetch_assoc()) {
+       echo "<li><a href=''>".$row["name"]."</a></li>";
+    }
+    echo "</ul></div>";
+  }
   
   // only display the results if there are any
   if($result->num_rows > 0) {
@@ -47,16 +59,8 @@
     echo "</form>";
   }
  
-  // make new portfolios
-  //$name = $mysqli-
-  //if()
-
   echo $_SESSION['active_portfolio'];
 
   $mysqli->close();
 
-?><!--
-<form method="post" action="index.php?portfolio" />
-  <input type="text" name="portfolio_name" />
-  <input type="submit" />
-</form> -->
+?>
