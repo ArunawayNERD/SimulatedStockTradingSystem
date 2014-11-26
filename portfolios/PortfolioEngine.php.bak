@@ -22,29 +22,11 @@ function connectDB()
 
 	return $mysqli;
 }
-/*
-	Get a user's active portfolio
-*/
-function getActivePortfolio($uid) 
-{
-  $mysqli = connectDB();
-  $request = $mysqli->prepare('select name from activePortfolio
-    where uid=?');
-  $request->bind_param('i', $uid);
-  $request->execute();
-  $request->bind_result($activePortfolio);
-  $request->fetch();
-  $request->close();
-  $mysqli->close();
-  return $activePortfolio;
-
-}
-
 
 /**
 	Sets a users active portfolio
 
-	returns 1 if the active portfolio was set
+
 */
 function setActivePortfolio($uid, $name)
 {
@@ -61,7 +43,7 @@ function setActivePortfolio($uid, $name)
 }
 
 /** 
-	adds a numbers of stock
+	Buys a numbers of stock
 
 	$uid - the users id
 	$name - name of the portfolio to update
@@ -72,7 +54,7 @@ function setActivePortfolio($uid, $name)
 		 1 added  the num shares
 		 2 added nums shares and added symbol into table
 */
-function addStockAmmount($uid, $name, $symbol, $num)
+function buyStockAmmount($uid, $name, $symbol, $num)
 {
 	if(is_float($num) || is_double($num))
 		$num = (int)$num;
@@ -124,7 +106,7 @@ function addStockAmmount($uid, $name, $symbol, $num)
 
 
 /**
-	removes a number of stocks owned
+	sells a number of stocks owned
 
 	$uid - the users id 
 	$name - the portfolio who owns the stocks 
@@ -138,7 +120,7 @@ function addStockAmmount($uid, $name, $symbol, $num)
 		 1 stock ammount chnaged
 		 2 new total was 0 and stock deleted from table
 */
-function removeStockAmmount($uid, $name, $symbol, $num)
+function sellStockAmmount($uid, $name, $symbol, $num)
 {
 	if(is_float($num) || is_double($num))
 		$num = (int)$num;
@@ -427,24 +409,26 @@ function makeNewPortfolio($uid, $name)
 
     $uid - the id of the user
 
-    $returns - A 2D array. Each element of the array is
-    an array containing the portfolio name and its cash.
+    $returns - an array of strings with all the portfolio names.
 */
 
 function getUserPortfolios($uid)
 {
+	$portfolioNames = array();
+	$singleName = "";
+
 	$mysqli = connectDB();
 
-	$request = $mysqli->prepare("select name, cash
-	  from portfolios where uid=?");
+
+	$request = $mysqli->prepare("select name from portfolios where uid=?");
 	$request->bind_param("i", $uid);
 	$request->execute();
-	$request->bind_result($result[0], $result[1]);
+	$request->bind_result($singleName);
 
  	$count = 0;
 	while($request->fetch())
 	{
-		$portfolioArray[$count] = array($result[0], $resul[1]);
+		$portfolioNames[$count] = $singleName;
 		$count++;
 	}
 
@@ -452,7 +436,7 @@ function getUserPortfolios($uid)
 	$request->close();
 	$mysqli->close();
 
-	return $portfolioArray;
+	return $portfolioNames;
 }
 
 

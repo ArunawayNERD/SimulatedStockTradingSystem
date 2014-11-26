@@ -42,11 +42,11 @@
 	
 //	echo(deletePortfolio(11, "aBouncingBadyPortfolio")."\n");
 
-	echo(buyStockAmmount(16, "John", "IBM", 0) . "\n");
+//	echo(buyStockAmmount(16, "John", "IBM", 0) . "\n");
 
-	echo(sellStockAmmount(16, "John", "IBM", 0). "\n");
+//	echo(sellStockAmmount(16, "John", "IBM", 0). "\n");
 
-
+	echo getUserPortfolios(21);
 
 	?>
 </body>
