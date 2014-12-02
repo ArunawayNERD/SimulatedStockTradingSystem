@@ -1,8 +1,10 @@
 /*Body Styles*/
 .wrapper {
+   margin: 0 auto;
    position: relative;
    padding: 60px 40px;
    padding-bottom: 60px;
+   width: 100%;
 }
 
 /*Nav Bar Styles*/
@@ -149,6 +151,34 @@ table.tablesorter thead tr th.headerSortDown {
 }
 
 /*Portfolios Page Styles*/
+.portfoliopage {
+   float: left;
+   width: 100%;
+}
+
+.leftbox {
+   float: left;
+   width: 16%;
+   padding: 20px 0;
+   margin: 0 2%;
+   display: inline;
+}
+
+.centerbox {
+   float: left;
+   width: 56%;
+   padding: 20px 0;
+   margin: 0 0 0 2%;
+}
+
+.rightbox {
+   float: right;
+   width: 16%;
+   padding: 20px 0;
+   margin: 0 2% 0 0;
+   display: inline;
+}
+
 .nav-sidebar {
    background-color: #EEEEEE;
    position: fixed;

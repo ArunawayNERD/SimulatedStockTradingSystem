@@ -48,7 +48,8 @@
 
 <div class="wrapper">
   <?php
-    $available = array("portfolios","stocks"); 
+    $available = array("portfolios", "stocks", "edit_portfolios",
+      "test"); 
     $request = $_SERVER['QUERY_STRING'];
     if($request=='') {
       include 'home.php';
@@ -59,7 +60,7 @@
 
 </div>
 
-<footer class="footer" <?php if ($_SERVER['QUERY_STRING'] == "stocks"){echo "style='bottom:auto;'";} ?>>
+<footer class="footer" <?php if ($_SERVER['QUERY_STRING'] == "stocks") {echo "style='bottom:auto;'";} ?>>
    <div class="container">
       <p class="text-muted"><small>Team UG-2 - Fall 2014 - CS 324</small></p>
       <p class="text-muted"><small><a href="">About</a></small></p>
