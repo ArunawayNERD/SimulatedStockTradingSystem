@@ -7,7 +7,7 @@ create table transactions (
   name varchar(40) not null,
   symbol varchar(5) not null,
   stocks int not null,
+  sharePrice float not null,
   constraint transactions_PK primary key (ts, uid, name),
-  foreign key (uid, name) references portfolios(uid, name),
-  foreign key(uid) references users(id)
+  foreign key (uid, name) references portfolios(uid, name)
 );

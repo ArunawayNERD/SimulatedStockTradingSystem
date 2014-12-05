@@ -7,6 +7,8 @@ create table portfolioStocks (
   symbol varchar(5) not null,
   stocks int not null,
   constraint portfolioStocks_PK primary key (uid, name, symbol),
-  foreign key (uid, name) references portfolios(uid,name),
-  foreign key(uid) references users(id)
+  constraint activePortfolios_FK foreign key (uid, name)
+    references portfolios(uid,name)
+    on update cascade
+  
 );
