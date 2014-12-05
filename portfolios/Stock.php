@@ -34,14 +34,13 @@ class Stock
 
 	public function getStockSymbol()
 	{
-		return (String) $this->stockSymbol();
+		return (String) $this->stockSymbol;
 	}
 	
 	public function toString()
 	{
-		$stringForm = "";
 
-		$stringForm = $this->stockSymbol . "," . $this->getStockName() . "," . $this->getNumShares() . ";";
+		$stringForm = $this->getStockSymbol() . "," . $this->getStockName() . "," . $this->getNumShares();
 
 		return $stringForm;
 	}

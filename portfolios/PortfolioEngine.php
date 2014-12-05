@@ -24,6 +24,8 @@ function connectDB()
 }
 /*
 	Get a user's active portfolio
+
+	returns a sting with the name of the uid's active portfolio or null if that uid does not have an active portfolio
 */
 function getActivePortfolio($uid) 
 {
@@ -49,13 +51,34 @@ function getActivePortfolio($uid)
 function setActivePortfolio($uid, $name)
 {
 	$mysqli = connectDB();
+	$testResult = "";
 
+	//check that the uid is in the tbale
+	$request = $mysqli->prepare('select uid from activePortfolio where uid=?');
+	$request->bind_param("i", $uid);
+	$request->execute();
+	$request->bind_result($testResults);
+	$request->fetch();
+	$request->close();
+
+	if(is_null($testResults))
+	{
+		$mysqli->close();
+
+		return 0;
+	}
+
+	//if the uid is in the table set the active portfolio
 	$request = $mysqli->prepare('update activePortfolio set name=? where uid=?');
 	$request->bind_param("si", $name, $uid);
 	$request->execute();
 
 	$request->close();
 	$mysqli->close();
+
+	//log change in active portfolio
+	$loggingEngine = new LoggingEngine();
+	$loggingEngine->logActivePortSet("User ID: " . $uid, $name);
 
 	return 1;
 }
@@ -68,11 +91,12 @@ function setActivePortfolio($uid, $name)
 	$symbol - ticker for the stock to be updated
 	$num - the ammount of stocks to buy
 
-	returns  0 nothing updated becuase change ammount < 1
+	returns -1 if the ticker does not exist in the stock database
+		 0 nothing updated becuase change ammount < 1
 		 1 added  the num shares
 		 2 added nums shares and added symbol into table
 */
-function addStockAmmount($uid, $name, $symbol, $num)
+function addStockAmount($uid, $name, $symbol, $num)
 {
 	if(is_float($num) || is_double($num))
 		$num = (int)$num;
@@ -85,13 +109,24 @@ function addStockAmmount($uid, $name, $symbol, $num)
 		return 0;
 	}
 
-
 	$currentTotal = 0;
 	$newTotal = 0;
 
 	$mysqli = connectDB();
+	
+	
+	//check that the symbol is valid
+	$request = $mysqli->prepare("select symbol from stocks where symbol=?");
+	$request->bind_param("s", $symbol);
+	$request->execute();
+	$request->bind_result($result);
+	$request->fetch();
+	$request->close();
 
-
+	if(is_null($result))
+		return -1;
+	
+	
 	//get current shares
 	$request = $mysqli->prepare('select stocks from portfolioStocks where uid=? and name=? and symbol=?');
 	$request->bind_param("iss", $uid, $name, $symbol);
@@ -107,6 +142,9 @@ function addStockAmmount($uid, $name, $symbol, $num)
 		$request->execute();
 		$request->close();
 
+		$loggingEngine = new LoggingEngine();
+		$loggingEngine->logStockShareChange("User ID : ".$uid, $name, $symbol, 0, $num);
+
 		return 2;
 	}
 
@@ -118,6 +156,10 @@ function addStockAmmount($uid, $name, $symbol, $num)
 	$request->close();
 
 	$mysqli->close();
+
+	//log stock amount change
+	$loggingEngine = new LoggingEngine();
+	$loggingEngine->logStockShareChange("User ID: ".$uid, $name, $symbol, $currentTotal, $newTotal);
 
 	return 1;
 }
@@ -132,13 +174,14 @@ function addStockAmmount($uid, $name, $symbol, $num)
 	$num - the ammount of stocks 
 
 
-	returns -2 if num is less than or equal to 0. you cant sell a negative ammount of stocks
+	returns -3 if the stock ticker does not exist in the database
+		-2 if num is less than or equal to 0. you cant sell a negative ammount of stocks
 		-1 if the portfolio does not have the symbol.
 	         0 no chnage becuase the new total would be below 0
 		 1 stock ammount chnaged
 		 2 new total was 0 and stock deleted from table
 */
-function removeStockAmmount($uid, $name, $symbol, $num)
+function removeStockAmount($uid, $name, $symbol, $num)
 {
 	if(is_float($num) || is_double($num))
 		$num = (int)$num;
@@ -154,6 +197,19 @@ function removeStockAmmount($uid, $name, $symbol, $num)
 
 	$mysqli = connectDB();
 
+	
+	//check that the symbol is valid
+	$request = $mysqli->prepare("select symbol from stocks where symbol=?");
+	$request->bind_param("s", $symbol);
+	$request->execute();
+	$request->bind_result($result);
+	$request->fetch();
+	$request->close();
+
+	if(is_null($result))
+		return -3;
+	
+	
 	//get how many stocks are currently owned by the user.
 	$request = $mysqli->prepare('select stocks from portfolioStocks where uid=? and name=? and symbol=?');
 	$request->bind_param("iss", $uid, $name, $symbol);
@@ -186,6 +242,9 @@ function removeStockAmmount($uid, $name, $symbol, $num)
 		$request->close();
 		$mysqli->close();
 
+		$loggingEngine = new LoggingEngine();
+		$loggingEngine->logStockShareChange("User ID: ".$uid, $name, $symbol, $currentTotal, $newNum);
+
 		return 2;
 	}
 
@@ -196,6 +255,10 @@ function removeStockAmmount($uid, $name, $symbol, $num)
 	$request->close();
 	$mysqli->close();
 
+	//log share change
+	$loggingEngine = new LoggingEngine();
+	$loggingEngine->logStockShareChange("User ID: ".$uid, $name, $symbol, $currentTotal, $newNum);
+	
 	return 1;
 }
 
@@ -237,6 +300,10 @@ function deletePortfolio($uid, $name)
 	$request->close();
 	$mysqli->close();
 
+	//log deletion
+	$loggingEngine = new LoggingEngine();
+	$loggingEngine->logPortDeletion("User ID: ".$uid, $name);
+
 	return 1;
 }
 
@@ -270,7 +337,7 @@ function adjustPortfolioCash($uid, $name, $change)
 	if($newCash < 0)
 		return 0;
 
-	setPortfolioCash($uid, $name, $newCash);
+	setPortfolioCash($uid, $name, $oldCash, $newCash);
 
 	return 1;
 }
@@ -281,7 +348,7 @@ function adjustPortfolioCash($uid, $name, $change)
 	return - 0 if the the action failed due to the user not having a portfolio with the supplied name.
 	       - 1 if the portfolio's cash was sucessfuly changed.
 */
-function setPortfolioCash($uid, $name, $cash)
+function setPortfolioCash($uid, $name, $oldCash, $cash)
 {
 	$result = "";
 
@@ -316,6 +383,10 @@ function setPortfolioCash($uid, $name, $cash)
 	$request->close();
 	$mysqli->close();
 
+	//log cash change
+	$loggingEngine = new LoggingEngine();
+	$loggingEngine->logCashChange("User ID: ".$uid, $name, $oldCash, $cash);
+
 	return 1;
 }
 
@@ -348,13 +419,16 @@ function changePortfolioName($uid, $oldName, $newName)
 		return -1;
 	}
 
+	$result = "";
+
 	//check if the user already has that name
 	//dont need another prepare line becuase it will the same as the last request
 	$request->bind_param("is", $uid, $newName); 
 	$request->execute();
 	$request->bind_result($result);
 	$request->fetch();
-
+	$request->close();
+	
 	if(!is_null($result))
 	{
 		$request->close();
@@ -371,6 +445,10 @@ function changePortfolioName($uid, $oldName, $newName)
 	//free system resources
 	$request->close();
 	$mysqli->close();
+
+	//log port rename
+	$loggingEngine = new LoggingEngine();
+	$loggingEngine->logPortRenamed("User ID: ".$uid, $oldName, $newName);
 
 	return 1;
 }
@@ -444,7 +522,7 @@ function getUserPortfolios($uid)
  	$count = 0;
 	while($request->fetch())
 	{
-		$portfolioArray[$count] = array($result[0], $resul[1]);
+		$portfolioArray[$count] = array($result[0], $result[1]);
 		$count++;
 	}
 
@@ -455,7 +533,41 @@ function getUserPortfolios($uid)
 	return $portfolioArray;
 }
 
+/**
+    Given a user Id this method will pull all the inactive portfolios which belong to this user.
 
+    $uid - the id of the user
+
+    $returns - A 2D array. Each element of the array is
+    an array containing the portfolio name and its cash.
+*/
+
+function getInactiveUserPortfolios($uid)
+{
+	$mysqli = connectDB();
+
+	$request = $mysqli->prepare("select portfolios.name, cash
+	  from portfolios, activePortfolio where 
+	  portfolios.uid = activePortfolio.uid
+	  and portfolios.uid=?
+	  and activePortfolio.name != portfolios.name");
+	$request->bind_param("i", $uid);
+	$request->execute();
+	$request->bind_result($result[0], $result[1]);
+
+ 	$count = 0;
+	while($request->fetch())
+	{
+		$portfolioArray[$count] = array($result[0], $result[1]);
+		$count++;
+	}
+
+	//free system resources
+	$request->close();
+	$mysqli->close();
+
+	return $portfolioArray;
+}
 /**
     Gets a single stockowned by the portfolio from the database
 
@@ -506,9 +618,10 @@ function getAllStocks($uid, $name)
 
 	while($request->fetch())
 	{
-		$ownedStocks[$counter] = $tempSymbol;
+		$ownedSymbols[$counter] = $tempSymbol;
 		$counter = $counter + 1;
 	}
+	$request->close();
 
 	//if there are no stocks owned by that portfolio
 	if(count($ownedSymbols) == 0)
@@ -517,7 +630,7 @@ function getAllStocks($uid, $name)
 	//pull the names of the stocks from the stock database
 	$request = $mysqli->prepare("select name from stocks where symbol=?");
 
-	for($i = 0; $i < $counter + 1; $i++) 
+	for($i = 0; $i < $counter; $i++) 
 	{
 		$request->bind_param("s", $ownedSymbols[$i]);
 		$request->execute();
@@ -526,14 +639,15 @@ function getAllStocks($uid, $name)
 
 		$stockNames[$i] = $tempName;
 	}
+	$request->close();
 	
-	
+
 	//use the pulled symbols to pull the number of stocks owned 
 	$request = $mysqli->prepare("select stocks from portfolioStocks where uid=? and name=? and symbol=?");
 	
-	for($i = 0; $i < $counter + 1; $i++)
+	for($i = 0; $i < $counter; $i++)
 	{
-		$request->bind_param("iss", $uid, $name, $onwedSymbols[$i]);
+		$request->bind_param("iss", $uid, $name, $ownedSymbols[$i]);
 		$request->execute();
 		$request->bind_result($tempStocks);
 		$request->fetch();
@@ -551,7 +665,7 @@ function getAllStocks($uid, $name)
     $uid - The user id of the user who owns the portfolio
     $portName - the name of the portfolio from which the cash ammount is pulled
 
-    returns - the cash ammount of the portfolio
+    returns - the cash ammount of the portfolio or -1 if the portfolio uid combo does not exist
 
 */
 function getPortfolioCash($uid, $portName)
@@ -566,6 +680,13 @@ function getPortfolioCash($uid, $portName)
 	$request->bind_result($cash);
 	$request->fetch();
 
+	if(is_null($cash))
+	{
+		$request->close();
+		$mysqli->close();
+
+		return -1;
+	}
 	
 	//free system resources
 	$request->close();
@@ -603,3 +724,39 @@ function getCompetitionState($uid, $name)
 	return $compStatus;
 }
 
+/*
+  input: user's id
+
+  output: an associative array with all the transactions associated
+  with the given id
+
+  WARNING: INSECURE. DO NOT USE USER INPUT
+*/
+
+function getTransactions ($uid) {
+
+  $mysqli = connectDB();
+  
+  $result = $mysqli->query("select ts, name, symbol, stocks,
+    sharePrice from transactions where uid=$uid");
+    
+  $count=0;
+  while($row = $result->fetch_assoc()) {
+    $transaction[$count] = array(
+      "ts" => $row["ts"], 
+      "name" => $row["name"],
+      "symbol" => $row["symbol"], 
+      "stocks" => $row["stocks"], 
+      "sharePrice" => $row["sharePrice"]
+    );
+    $count++;
+  } 
+  
+  $mysqli->close();
+
+  return $transaction;
+
+}
+
+?>
+}

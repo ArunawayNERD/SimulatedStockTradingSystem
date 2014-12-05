@@ -45,9 +45,24 @@
 //	echo(buyStockAmmount(16, "John", "IBM", 0) . "\n");
 
 //	echo(sellStockAmmount(16, "John", "IBM", 0). "\n");
+/*	echo(makeNewPortfolio(22, "JohnsTest2")."\n");
 
-	echo getUserPortfolios(21);
+	echo((string)getActivePortfolio(22)."\n");
+	echo(setActivePortfolio(22, "John"). "\n");
+	echo(getActivePortfolio(22). "\n");
 
+	echo(adjustPortfolioCash(22, "JohnsTest2", 1)."\n");
+	
+	echo(addStockAmount(22, "JohnsTest2", "IBM", 1)."\n");
+	echo(removeStockAmount(22, "JohnsTest2", "IBM", 1)."\n");
+
+	echo(changePortfolioName(22, "JohnsTest2", "JohnsTest")."\n"); 
+
+	echo(deletePortfolio(22, "JohnsTest")."\n");
+*/
+
+//	echo(addStockAmount(22, "JohnTester2", "IBM", 1)."\n");
+	echo(removeStockAmount(22, "JohnTester2", "IBM", 1)."\n");
 	?>
 </body>
 </html>
