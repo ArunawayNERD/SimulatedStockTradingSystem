@@ -1,0 +1,307 @@
+
+<?php
+  // include the proper logging mechanisms
+  include 
+    '/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php';
+
+  // php methods that interface with the database
+  include
+    '/home/ssts/simulatedstocktradingsystem/portfolios/PortfolioEngine.php';
+  
+  // get user id from session variables 
+  $uid=$_SESSION['id'];
+
+  // make a new portfolio
+  if(trim($_POST['newName']) != '') {
+    makeNewPortfolio($uid, $_POST['newName']);
+  }
+  // set the new active portfolio if submitted
+  if($_POST['active']!='')
+    setActivePortfolio($uid, $_POST['active'] );
+
+  // deletes portfolio if submitted
+    if($_POST['delete'] != '') 
+      deletePortfolio($uid,$_POST['delete']);
+
+  // renames portfolio if submitted
+  if($_POST['changeName'] != '' && trim($_POST['renamedName'] != '')) { 
+    changePortfolioName($uid,$_POST['changeName'],
+      trim($_POST['renamedName']));
+  }
+
+  //get and set as session variable the active portfolio 
+  $_SESSION['active_portfolio'] = getActivePortfolio($uid);
+  //get active portfolio's cash
+  $active_cash = getPortfolioCash($uid, $_SESSION['active_portfolio']);
+  // get the inactive portfolios
+  $inactivePortfolios = getInactiveUserPortfolios($uid);
+?>
+
+<!-- Overall Container -->
+<div class="portfoliopage">
+
+<!-- Container for Left Box -->
+<div class="leftbox">
+<!-- clicking the button shows the create portfolio modal -->
+<div class="side-button">
+<button class="btn btn-primary btn-small" id="toggleBtn1" data-toggle="modal" data-target="#createModal"> 
+  Create portfolio 
+</button>
+</div>
+<!-- Modal for creating a portfolio -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Create a Portfolio</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="index.php?portfolios">
+          <input type="text" name="newName" value="Portfolio Name" />
+          <input type="submit" value="Make New" />
+        </form>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	       Cancel
+	     </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- clicking the button shows the set active portfolio modal -->
+<div class="side-button">
+<button class="btn btn-primary btn-small" id="toggleBtn3" data-toggle="modal" data-target="#activeModal"> 
+  Set active Portfolio
+</button>
+</div>
+<!-- Modal for setting active portfolio -->
+<div class="modal fade" id="activeModal" tabindex="-1" 
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	  <span aria-hidden="true">&times;</span>
+	  <span class="sr-only">Close</span>
+	</button>
+        <h4 class="modal-title" id="myModalLabel">Pick an Active Portfolio</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="index.php?portfolios">
+          <table>
+          <?php
+            // display the inactive portfolios as options for making active
+            for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
+            echo "<tr>" 
+            . "<td><input type=\"radio\" name=\"active\" " 
+	        . "value=\"" . $inactivePortfolios[$i][0] . "\" /></td>" 
+            . "<td>" . $inactivePortfolios[$i][0] . "</td>"
+	        . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	        . "</tr>\n";
+            }
+          ?>
+          </table>
+          <input type="submit" value="Make Active"/>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+	      Cancel
+	    </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Container for sidebar of portfolios -->
+<div class="portinfo col-sm-3 col-md-2 sidebar">
+
+<table class='nav nav-sidebar'>
+
+<?php  
+      // emphasize the active portfolio
+        echo "<tr>"
+	. "<td><em>" . $_SESSION['active_portfolio'] . "</em></td>"
+	. "<td><em>$" . $active_cash . "</em></td>"
+	. "</tr>\n";
+      // display the inactive portfolios 
+    for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
+      echo "<tr>" 
+        . "<td>" . $inactivePortfolios[$i][0] . "</td>"
+	. "<td>$" . $inactivePortfolios[$i][1] . "</td>"
+	. "</tr>\n";
+      }
+  echo "</table>";
+  echo "</div>";
+
+?>
+</div><!-- End of Left Box div -->
+
+<!-- Container for Center Box -->
+<div class="centerbox">
+
+<?php
+   echo "<h1>".$_SESSION['active_portfolio']."</h1>";
+   echo "<h2>$".$active_cash."</h2>";
+?>
+
+
+<!-- clicking the button shows the delete portfolio form -->
+<div>
+<button class="btn btn-primary btn-small" id="toggleBtn2" data-toggle="modal" data-target="#deleteModal"> 
+  Delete portfolio 
+</button>
+</div>
+<!-- Modal for deleting a portfolio -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Delete a Portfolio</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="index.php?portfolios">
+        <table>
+        <?php
+          for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
+          echo "<tr>" 
+          . "<td><input type=\"radio\" name=\"delete\" " 
+	      . "value=\"" . $inactivePortfolios[$i][0] . "\" /></td>" 
+          . "<td>" . $inactivePortfolios[$i][0] . "</td>"
+	      . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	      . "</tr>\n";
+          }
+        ?>
+        </table>
+        <button type="submit" class="btn btn-default">
+	  Delete 
+	</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	     Cancel
+	 </button>
+      </div>
+    </div>
+  </div>
+</div>
+	  
+<!-- clicking the button shows the rename portfolio form -->
+<div>
+<button class="btn btn-primary btn-small" id="toggleBtn4" 
+  data-toggle="modal" data-target="#renameSelection"> 
+  Rename Portfolio
+</button>
+</div>
+<!-- Modal for selecting a portfolio to rename -->
+<div class="modal fade" id="renameSelection" tabindex="-1" 
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Rename the Portfolio</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="index.php?portfolios">
+        <table>
+        <?php
+        // display the inactive portfolios as options for renaming 
+        for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
+        echo "<tr>" 
+        . "<td><input type=\"radio\" name=\"rename\" " 
+        . "value=\"" . $inactivePortfolios[$i][0] . "\" /></td>" 
+        . "<td>" . $inactivePortfolios[$i][0] . "</td>"
+	    . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	    . "</tr>\n";
+       }
+       ?>
+       </table>
+       <button type="submit" class="btn btn-default">
+         Select
+       </button>
+       <input type="hidden" name="isRename" value="true" />
+       </form>
+     </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	     Cancel
+	 </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for renaming a portfolio -->
+<div class="modal fade"
+  id="renameModal" tabindex="-1" 
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Rename the Portfolio</h4>
+      </div>
+      <div class="modal-body">
+<!-- form to change the name -->
+<?php
+    echo "<form method=\"post\" action=\"index.php?portfolios\">\n";
+    echo "<p>Rename " . $_POST['rename'] . " as </p>\n";
+    echo "<input type=\"text\" name=\"renamedName\" />\n";
+    echo "<input type=\"submit\" value=\"Rename\" />";
+    echo "<input type=\"hidden\" name=\"changeName\" "
+      . "value=\"" . $_POST['rename'] . "\" />";
+    echo "</form>";
+?>
+     </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	     Cancel
+	 </button>
+      </div>
+    </div>
+  </div>
+</div>
+<?php 
+  if($_POST['isRename']==true) {
+    
+    echo "<script type=\"text/javascript\">";
+    echo "$('#renameModal').modal('show');";
+    echo "</script>";
+  
+  }
+?>
+</div> <!-- End of Center Box div -->
+
+<!-- Container for Right Box -->
+<!-- This file is getting humongous, so I suggest we put all
+three sections into their own file.  Look to portfolios_right.php
+for the code to the following section -->
+
+<div class="rightbox">
+
+<?php
+  include 'portfolios_right.php';
+?>
+
+</div> <!-- End of Right Box -->
+
+</div> <!-- End of Overall Container -->

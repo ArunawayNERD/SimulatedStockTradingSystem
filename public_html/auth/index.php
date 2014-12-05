@@ -7,6 +7,9 @@
 
    <script type="text/javascript" src="jquery-1.11.1.js"></script> 
    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+   
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+   <script src="../dist/js/bootstrap.min.js"></script>
    <link rel="stylesheet" href="theme.blue.css">
 
   <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,14 +28,14 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
            </button>
-           <img class="navbar-brand" src="../ssts_logo.png" width="50" height="30"/>
+           <img class="navbar-brand" src="../ssts_logo.png" width="50" height="30" alt="SSTS"/>
        </div>
        <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
              <li <?php if ($_SERVER['QUERY_STRING'] == ""){echo "class='active'";} ?>><a href="index.php">Home</a></li>
              <li <?php if ($_SERVER['QUERY_STRING'] == "portfolios"){echo "class='active'";} ?>><a href="?portfolios">Portfolios</a></li>
              <li><a href="">Competitions</a></li>
-			 <li <?php if ($_SERVER['QUERY_STRING'] == "stocks"){echo "class='active'";} ?>><a href="?stocks">Stocks</a></li>
+             <li <?php if ($_SERVER['QUERY_STRING'] == "stocks"){echo "class='active'";} ?>><a href="?stocks">Stocks</a></li>
              <li><a href="">What-If</a></li>
          </ul>
 	 <ul class="nav navbar-nav navbar-right">
@@ -48,13 +51,14 @@
 
 <div class="wrapper">
   <?php
-    $available = array("portfolios", "stocks", "edit_portfolios",
-      "test"); 
+    $available = array("portfolios", "stocks", "portfolios"); 
     $request = $_SERVER['QUERY_STRING'];
     if($request=='') {
       include 'home.php';
-    } else if (in_array($request, $available)) {
+    } else if (in_array($request, $available)) { 
       include $request . '.php';
+    } else if ($request=="test") {
+      header('Location: test.php'); 
     }
   ?>
 
@@ -98,6 +102,13 @@
          });
       });
    </script>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+<link rel="stylesheet" href="/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+
 
 </body>
 </html>

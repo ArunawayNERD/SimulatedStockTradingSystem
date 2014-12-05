@@ -21,10 +21,11 @@
     $_SESSION['id'] = $result[0];
     $_SESSION['username'] = $result[1];
     $_SESSION['password'] = $result[2];
-    $_SESSION['active_portfolio'] = $result[1]; 
+    $_SESSION['active_portfolio']; 
     // to log logins
+    //require dirname('../Logging/LoggingEngine.php');
     include 
-    '/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php';
+      '/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php';
     $log=new LoggingEngine();
     $log->logUserLogin($_SESSION['username']);
   }

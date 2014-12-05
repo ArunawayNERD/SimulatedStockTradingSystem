@@ -1,0 +1,95 @@
+  <script type="text/javascript">
+    ('#myModal').modal({show: false})
+  </script>
+
+<?php 
+  // get session user's id
+  $uid=$_SESSION['id'];
+
+  // include portfolio engine functions
+  include
+    '/home/ssts/simulatedstocktradingsystem/portfolios/PortfolioEngine.php';
+
+
+  //activate with data
+  if(trim($_POST['rename']) != '') {
+    echo "<script type=\"text/javascript\">\n";
+    echo "$('#myModal').modal('show');\n";
+    echo "</script>";
+
+  }
+?>
+
+
+<h1>Edit Portfolios</h1>
+<p><a href="index.php?portfolios">Return to portfolios</a></p>
+<ul>
+  <li>You can not edit an active portfolio</li>
+  <li>You can not delete a portfolio in a competition
+    (not yet implemented)
+  </li>
+</ul>
+<div role="tabpanel">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+      <a href="#rename" aria-controls="rename" role="tab" data-toggle="tab">
+        Rename
+      </a>
+    </li>
+    <li role="presentation">
+      <a href="#delete" aria-controls="delete" 
+      role="tab" data-toggle="tab">
+        Delete
+      </a>
+    </li>
+  </ul>
+</div>
+<!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="rename">
+      <?php 
+  	//get inactive portfolios
+	$inactivePortfolios = getInactiveUserPortfolios($uid);
+        
+	// table to select inactive portfolios
+        echo "<form method=\"post\" action=\"index.php?edit_portfolios\">";
+        echo "<table>";
+        for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
+          echo "<tr>" 
+            . "<td><input type=radio name=\"rename\"" 
+	    . "value=" . $inactivePortfolios[$i][0] . " /></td>" 
+            . "<td>" . $inactivePortfolios[$i][0] . "</td>"
+	    . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	    . "</tr>";
+        }
+        echo "</table>";
+        echo "<input type=\"submit\" value=\"Rename\"/>";
+        echo "</form>";
+      
+      
+      ?> 
+    </div>
+    <div role="tabpanel" class="tab-pane" id="delete">
+      <?php 
+  	//get inactive portfolios
+	$inactivePortfolios = getInactiveUserPortfolios($uid);
+        
+	// table to select inactive portfolios
+        echo "<form method=\"post\" action=\"\">";
+        echo "<table>";
+        for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
+          echo "<tr>" 
+            . "<td><input type=radio name=active " 
+	    . "value=" . $inactivePortfolios[$i][0] . " /></td>" 
+            . "<td>" . $inactivePortfolios[$i][0] . "</td>"
+	    . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	    . "</tr>";
+        }
+        echo "</table>";
+        echo "<input type=\"submit\" value=\"Delete\"/>";
+        echo "</form>";
+      ?>
+    </div>
+  </div>
+

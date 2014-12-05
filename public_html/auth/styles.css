@@ -157,18 +157,20 @@ table.tablesorter thead tr th.headerSortDown {
 }
 
 .leftbox {
-   float: left;
-   width: 16%;
-   padding: 20px 0;
-   margin: 0 2%;
-   display: inline;
+   position: absolute;
+   left: 20px;
+   top: 60px;
+}
+
+.leftbox .side-button {
+   margin-bottom: 10px;
 }
 
 .centerbox {
    float: left;
    width: 56%;
    padding: 20px 0;
-   margin: 0 0 0 2%;
+   margin: 0 2% 0 200px;
 }
 
 .rightbox {
@@ -182,7 +184,7 @@ table.tablesorter thead tr th.headerSortDown {
 .nav-sidebar {
    background-color: #EEEEEE;
    position: fixed;
-   top: 51px;
+   top: 150px;
    bottom: 0;
    left: 0;
    z-index: -1000;

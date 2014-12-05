@@ -36,8 +36,6 @@
   $active_cash = getPortfolioCash($uid, $_SESSION['active_portfolio']);
   // get the inactive portfolios
   $inactivePortfolios = getInactiveUserPortfolios($uid);
-  //get the active portfolio's investments
-  $equities = getAllStocks($uid, $_SESSION['active_portfolio']);
 
 ?>
 
@@ -107,50 +105,6 @@
   Rename Portfolio
 </button>
 </div>
-
-<!-- current investments -->
-<h2>Investment Portfolio</h2>
-<table class="table">
-  <tr>
-    <th>Ticker</th>
-    <th>Company</th>
-    <th>Shares</th>
-  </tr>
-  <?php
-    foreach($equities as $equity) {
-      echo "<tr>";
-      echo "<td>" . $equity->getStockSymbol() . "</td>";
-      echo "<td>" . $equity->getStockSymbol() . "</td>";
-      echo "<td>" . $equity->getStockSymbol() . "</td>";
-      echo "</tr>";
-    }
-  ?>
-</table>
-
-<!-- list transactions -->
-<h2>Transactions</h2>
-<table class="table">
-  <tr>
-    <th>Time</th>
-    <th>Portfolio</th>
-    <th>Company</th>
-    <th>Shares</th>
-    <th>Price</th>
-  </tr>
-<?php 
-  $transactions = getTransactions($uid);
-  foreach($transactions as $transaction) {
-    echo "<tr>";
-    echo "<td>" . $transaction["ts"] . "</td>";
-    echo "<td>" . $transaction["name"] . "</td>";
-    echo "<td>" . $transaction["symbol"] . "</td>";
-    echo "<td>" . $transaction["stocks"] . "</td>";
-    echo "<td>$" . $transaction["sharePrice"] . "</td>";
-    echo "</tr>";
-  }
-?>
-</table>
-
 </div> <!-- End of Center Box div -->
 
 
@@ -167,10 +121,10 @@
 <!-- selection menu of stocks, filtered by the above search menu --> 
 <form method="POST" action="index.php?portfolios"> 
   <select name="buyStock" multiple size=30 class="form-control">
-  <table>
   <?php
     include_once '/home/ssts/simulatedstocktradingsystem/stockSearch.php';
     $stockList = stockSearch($_POST['search']);
+    echo "<table>\n";
     for($i=0; $i<sizeOf($stockList); $i++) {
       echo "<tr>";
       echo "<option value=\"" . $stockList[$i][0] . "\">";
@@ -180,8 +134,8 @@
       echo "</option>";
       echo "</tr>\n";
     }
+    echo "</table>\n";
   ?>
-  </table>
   </select>
   <button type="submit" class="btn btn-default" >
     Buy
@@ -194,7 +148,6 @@
 
 </div> <!-- End of Overall Container -->
 
-<!-- for all the fancy modals -->
 <?php include 'portfolios_modals.php'; ?>
   
 <?php  
