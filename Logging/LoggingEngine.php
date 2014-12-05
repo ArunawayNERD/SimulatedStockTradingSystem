@@ -22,6 +22,57 @@ class LoggingEngine
     }
 
     /*
+       Writes to the log file that a portfolio was deleted
+    */
+    public function logPortDeletion($user, $name)
+    {
+	$msg = $user . " deleted their portfolio \"" . $name . "\"";
+
+	$this->logMessage($msg);
+    }
+
+    /*
+	Writes a message to the daily log that a portfolio was renamed.
+    */
+    public function logPortRenamed($user, $oldName, $newName)
+    {
+	$msg = $user . " renamed their portfolio \"". $oldName . "\" to \"" . $newName . "\"";
+
+	$this->logMessage($msg);
+    }
+
+    /*
+	writes a message to the daily log file that a users active portfolio was changed.
+    */
+    public function logActivePortSet($user, $newActive)
+    {
+	$msg = $user . " set their active portfolio to \"" . $newActive . "\"";
+
+	$this->logMessage($msg);
+    }	
+
+    /*
+    	Writes a message to the daily log file that the cash in a portfolio changed
+    */
+    public function logCashChange($user ,$name, $oldTotal, $newTotal)
+    {
+	$msg = "Cash in " . $user . "'s portfolio \"" . $name . "\" changed from " . $oldTotal . " to " . $newTotal;
+
+	$this->logMessage($msg);
+    }
+
+    /*
+    	Writes a message to the daily log file that a portfolios stock changed amount
+    */
+    public function logStockShareChange($user, $name, $symbol, $oldTotal, $newTotal)
+    {
+	$msg = "Number of shares of " . $symbol . " changed in " . $user . "'s portfolio \"" . $name . "\". Total changed from " . $oldTotal . " to " . $newTotal;
+
+	$this->logMessage($msg);
+    }
+
+
+    /*
      * Writes that the daily stock data was updated to the daily log file
      */
     public function logStockDataUpdate()
