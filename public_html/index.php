@@ -44,7 +44,7 @@
 </head>
 <body>
 
-<img src="ssts_logo.png" class="logo" width="240" height="144"/>
+<img src="ssts_logo.png" class="logo" width="240" height="144" alt="SSTS"/>
 
 <h1 class="form-signin-heading">Simulated Stock <br/>Trading System</h1>
 <?php
@@ -54,7 +54,7 @@
 	 header("Location: auth/index.php");
       }
       else
-         echo '<span class="signin-message">Invalid Login</span>';
+         echo '<span class="signin-message text-danger">Invalid Login</span>';
       }
 ?>
 

@@ -13,7 +13,7 @@
 <img src="ssts_logo.png" class="logo" width="240" height="144"/>
 
 <h1 class="form-signin-heading">Simulated Stock <br/>Trading System</h1>
-<p class="signin-message">Password Reset/p>
+<p class="signin-message">Password Reset</p>
 <?php
   // include the proper logging mechanisms
   include 
@@ -50,7 +50,7 @@
       $stmt->close();
       echo '<span class="signin-message">Password updated</span>';
     } else {
-       echo $username . ' has not registered'; 
+       echo '<p class="signin-message text-danger">'.$username . ' has not registered</p>'; 
     }
   }
   $mysqli->close();

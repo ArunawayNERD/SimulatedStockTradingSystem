@@ -55,9 +55,11 @@
     $request = $_SERVER['QUERY_STRING'];
     if($request=='') {
       include 'home.php';
-    } else if (in_array($request, $available)) { 
+	} 
+	else if (in_array($request, $available)) { 
       include $request . '.php';
-    } else if ($request=="test") {
+    } 
+	else if ($request=="test") {
       header('Location: test.php'); 
     }
   ?>

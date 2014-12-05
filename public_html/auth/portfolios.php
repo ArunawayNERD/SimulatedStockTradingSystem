@@ -156,6 +156,8 @@
 
 <div class="rightbox">
 
+<h3>Buy Shares</h3>
+
 <!-- search bar -->
 <form class="form-inline" method="POST" action="index.php?portfolios">
   <input type="text" name="search" />
@@ -166,7 +168,7 @@
 
 <!-- selection menu of stocks, filtered by the above search menu --> 
 <form method="POST" action="index.php?portfolios"> 
-  <select name="buyStock" multiple size=30 class="form-control">
+  <select name="buyStock" multiple size=20 class="form-control">
   <table>
   <?php
     include_once '/home/ssts/simulatedstocktradingsystem/stockSearch.php';

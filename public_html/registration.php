@@ -43,7 +43,7 @@
     $stmt->fetch();
     $stmt->close();
     if($result)
-      echo '<span class="signin-message">' . $username . ' has already registered.</span>';
+      echo '<span class="signin-message text-danger">' . $username . ' has already registered.</span>';
     else {
       // add new username to database
       $token=hash('ripemd128', "$username$password");
