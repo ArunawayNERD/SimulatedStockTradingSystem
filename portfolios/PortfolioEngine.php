@@ -757,6 +757,3 @@ function getTransactions ($uid) {
   return $transaction;
 
 }
-
-?>
-}

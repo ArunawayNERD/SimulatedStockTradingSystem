@@ -36,7 +36,7 @@
 			break;
 	}		
 */	
-//	echo(setPortfolioCash(11, "JohnsTest1", 1234.56). "\n");
+	echo(setPortfolioCash(22, "John", 0 ,100000). "\n");
 
 //	echo(adjustPortfolioCash(11, "JohnsTest1", -1). "\n");
 	
@@ -62,7 +62,7 @@
 */
 
 //	echo(addStockAmount(22, "JohnTester2", "IBM", 1)."\n");
-	echo(removeStockAmount(22, "JohnTester2", "IBM", 1)."\n");
+//	echo(removeStockAmount(22, "JohnTester2", "IBM", 1)."\n");
 	?>
 </body>
 </html>
