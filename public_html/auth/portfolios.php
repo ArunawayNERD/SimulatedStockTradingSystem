@@ -63,22 +63,16 @@
 <!-- Container for sidebar of portfolios -->
 <div class="portinfo col-sm-3 col-md-2 sidebar">
 
-<table class='nav nav-sidebar'>
+<ul class='nav nav-sidebar'>
 
 <?php  
       // emphasize the active portfolio
-        echo "<tr>"
-	. "<td><em>" . $_SESSION['active_portfolio'] . "</em></td>"
-	. "<td><em>$" . $active_cash . "</em></td>"
-	. "</tr>\n";
+	echo "<li class='sidebar-active'><a href=''><em><span style='float:left;width:50%;'>" . $_SESSION['active_portfolio']. "</span><span style='float:right;width:50%;'>$" . $active_cash . "</span></em></a></li>\n";
       // display the inactive portfolios 
     for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
-      echo "<tr>" 
-        . "<td>" . $inactivePortfolios[$i][0] . "</td>"
-	. "<td>$" . $inactivePortfolios[$i][1] . "</td>"
-	. "</tr>\n";
+      echo "<li><a href=''><span style='float:left;width:50%;'>" . $inactivePortfolios[$i][0] . "</span><span style='float:right;width:50%;'>$" . $inactivePortfolios[$i][1] . "</span></a></li>\n";
       }
-  echo "</table>";
+  echo "</ul>";
   echo "</div>";
 
 ?>
@@ -89,17 +83,8 @@
 
 <?php
    echo "<h1>".$_SESSION['active_portfolio']."</h1>";
-   echo "<h2>$".$active_cash."</h2>";
 ?>
 
-
-<!-- clicking the button shows the delete portfolio form -->
-<div>
-<button class="btn btn-primary btn-small" id="toggleBtn2" data-toggle="modal" data-target="#deleteModal"> 
-  Delete portfolio 
-</button>
-</div>
-	  
 <!-- clicking the button shows the rename portfolio form -->
 <div>
 <button class="btn btn-primary btn-small" id="toggleBtn4" 
@@ -107,6 +92,10 @@
   Rename Portfolio
 </button>
 </div>
+ 
+<?php
+   echo "<h2 style='position:absolute;right:0px;top:0px;'>Cash = $".$active_cash."</h2>";
+?>
 
 <!-- current investments -->
 <h2>Investment Portfolio</h2>
@@ -151,6 +140,12 @@
 ?>
 </table>
 
+<!-- clicking the button shows the delete portfolio form -->
+<div>
+<button class="btn btn-primary btn-small" id="toggleBtn2" data-toggle="modal" data-target="#deleteModal"> 
+  Delete portfolio 
+</button>
+</div>
 </div> <!-- End of Center Box div -->
 
 
