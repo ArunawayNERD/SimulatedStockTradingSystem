@@ -31,7 +31,7 @@ class Transaction
 	{	
 		$string = $this->getTime() . ",".$this->getUid().",".$this->getPortName().",";
 		$string = $string.$this->getTicker().",".$this->getStockPrice().",";
-		$string = $string.$this->getShareChange().",".$this->getCashChange().";";
+		$string = $string.$this->getShareChange().",".$this->getCashChange();
 
 		return $string;
 	}

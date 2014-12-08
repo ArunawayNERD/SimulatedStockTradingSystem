@@ -79,7 +79,7 @@ function sellStock($uid, $portName, $ticker, $numToSell)
 	adjustPortfolioCash($uid, $portName, $totalCost);
 
 	//store the transaction the dataBase
-	insertTransaction($uid, $portName, $ticker, -1); //will add either cash chnage or stock price when db is updated 
+	insertTransaction($uid, $portName, $ticker, -1 * $numToSell, $sharePrice); 
 
 	//log transaction
 	$loggingEngine = new LoggingEngine();
@@ -136,7 +136,7 @@ function buyStock($uid, $portName, $ticker, $numToBuy)
 
 	addStockAmount($uid, $portName, $ticker, $numToBuy);
 
-	insertTransaction($uid, $portName, $ticker, $numToBuy);
+	insertTransaction($uid, $portName, $ticker, $numToBuy, $stockCost);
 
 	//log
 	$loggingEngine = new LoggingEngine();
@@ -167,7 +167,7 @@ function getAllUserTrans($uid, $portName)
 
 	while(!is_null($row = $results->fetch_assoc()))
 	{
-		$tempTrans = new Transaction($row["ts"], $row["uid"], $row["name"],$row["symbol"],"temp", $row["stocks"], "temp");
+		$tempTrans = new Transaction($row["ts"], $row["uid"], $row["name"],$row["symbol"], $row["sharePrice"], $row["stocks"], ($row["sharePrice"] * $row["stocks"]));
 		$transactions[$counter] = $tempTrans;
 
 		$counter = $counter + 1;
@@ -216,12 +216,12 @@ function getStockNamePrice($ticker)
 
 	Precondition: the uid and portName combo is valid
 */
-function insertTransaction($uid, $portName, $symbol, $shareChange)
+function insertTransaction($uid, $portName, $symbol, $shareChange, $sharePrice)
 {
 	$mysqli = connectDB();
 
-	$request = $mysqli->prepare("insert into transactions (uid, name, symbol, stocks) values (?,?,?,?)");
-	$request->bind_param("issi", $uid, $portName, $symbol, $shareChange);
+	$request = $mysqli->prepare("insert into transactions (uid, name, symbol, stocks, sharePrice) values (?,?,?,?,?)");
+	$request->bind_param("issii", $uid, $portName, $symbol, $shareChange, $sharePrice);
 	$request->execute();
 	$request->close();
 
