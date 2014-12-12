@@ -1,7 +1,17 @@
 /*Body Styles*/
+html,
+body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+
 .wrapper {
-   margin: 0 auto;
+   min-height: 100%;
    position: relative;
+}
+
+.content {
    padding: 60px 40px;
    padding-bottom: 60px;
    width: 100%;
@@ -118,6 +128,11 @@
 
 #stocks thead th {
    text-align: center;
+   white-space: nowrap;
+}
+
+#stocks tbody tr td {
+   white-space: nowrap;
 }
 
 table.tablesorter thead tr th.headerSortUp {
@@ -151,16 +166,24 @@ table.tablesorter thead tr th.headerSortDown {
    width: 550px;
 }
 
+#searchTerm {
+   width: 50%;
+   margin-right: auto;
+   margin-left: auto;
+}
+
 /*Portfolios Page Styles*/
 .portfoliopage {
-   float: left;
+   position: relative;
    width: 100%;
 }
 
 .leftbox {
-   position: absolute;
-   left: 20px;
-   top: 60px;
+   position:relative;
+   width: 230px;
+   float:left;
+   top: 10px;
+   z-index: 1000;
 }
 
 .leftbox .side-button {
@@ -169,47 +192,24 @@ table.tablesorter thead tr th.headerSortDown {
 
 .centerbox {
    position: relative;
-   padding: 20px 0;
-   margin-left: 200px;
-   margin-right: 220px;
-   width:60%;
+   padding: 0px 240px 20px 250px;
 }
 
-/*
-.centerbox {
-   float: left;
-   width: 56%;
-   padding: 20px 0;
-   margin: 0 2% 0 200px;
-}*/
-
 .rightbox {
-   position: fixed;
-   width: 220px;
-   top: 60px;
-   right:0;
-   padding: 20px 0;
-   margin: -30px 2% 0 0;
-}
-
-/*
-.rightbox {
+   position: relative;
    float: right;
-   width: 16%;
-   padding: 20px 0;
-   margin: -30px 2% 0 0;
-   display: inline;
+   top: -20px;
+   width: 220px;
+   z-index: 1000;
 }
-*/
 
 .sidebar {
    background-color: #EEEEEE;
-   position: fixed;
+   position: static;
    top: 150px;
    width: 230px;
    bottom: 0;
    left: 0;
-/*   z-index: -1000;*/
    display: block;
    padding: 20px;
    overflow-x: hidden;
@@ -224,7 +224,7 @@ table.tablesorter thead tr th.headerSortDown {
 
 .nav-sidebar > li > a {
   display: block;
-   overflow: hidden;
+  overflow: hidden;
   padding-right: 20px;
   padding-left: 20px;
 }
@@ -234,4 +234,58 @@ table.tablesorter thead tr th.headerSortDown {
 .nav-sidebar > .sidebar-active > a:focus {
   color: #fff;
   background-color: #9b9b9b;
+}
+
+.port-stats {
+   position: absolute;
+   right: 240px;
+   top: 0;
+}
+
+@media (max-width: 768px) {
+   .port-stats {
+      position: static;
+      right: 0;
+   }
+   .centerbox {
+      padding-right: 0;
+   }
+   .rightbox {
+      float: none;
+      position: static;
+      top: 0;
+   }
+}
+
+@media (max-width: 1024px) {
+   .centerbox {
+      padding-left: 0;
+   }
+   .leftbox {
+      position: static;
+      float: none;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+   }
+   #sidebar-exp {
+      display: none;
+   }
+   .side-button, .dropdown {
+      display: inline-block;
+      margin: 2%;
+   }
+}
+
+@media (min-width: 1024px) {
+   #sidebar-exp {
+      display: block;
+   }
+   #sidebar-colp {
+      display: none;
+   }
+}
+
+.dropdown-menu {
+    width: 250px !important;
 }

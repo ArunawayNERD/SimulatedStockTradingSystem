@@ -3,13 +3,15 @@
 <!doctype html>
 <html>
 <head>
-  <title>SSTS - Home</title> 
+  <title>SSTS</title> 
 
    <script type="text/javascript" src="jquery-1.11.1.js"></script> 
    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
    
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
    <script src="../dist/js/bootstrap.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
    <link rel="stylesheet" href="theme.blue.css">
 
   <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,9 +20,9 @@
 
 </head>
 <body>
-
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<div class="wrapper">
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
        <div class="navbar-header">
            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -34,9 +36,9 @@
           <ul class="nav navbar-nav">
              <li <?php if ($_SERVER['QUERY_STRING'] == ""){echo "class='active'";} ?>><a href="index.php">Home</a></li>
              <li <?php if ($_SERVER['QUERY_STRING'] == "portfolios"){echo "class='active'";} ?>><a href="?portfolios">Portfolios</a></li>
-             <li><a href="">Competitions</a></li>
+             <li><a href="?competitions">Competitions</a></li>
              <li <?php if ($_SERVER['QUERY_STRING'] == "stocks"){echo "class='active'";} ?>><a href="?stocks">Stocks</a></li>
-             <li><a href="">What-If</a></li>
+             <li <?php if ($_SERVER['QUERY_STRING'] == "whatif"){echo "class='active'";} ?>><a href="?whatif">What-If</a></li>
          </ul>
 	 <ul class="nav navbar-nav navbar-right">
 	    <li class="navbar-text visible-md visible-lg"><?php echo 'Welcome ' . $_SESSION['username'];?></li>
@@ -49,9 +51,10 @@
    </div>
 </nav>
 
-<div class="wrapper">
+<div class="content">
   <?php
-    $available = array("portfolios", "stocks", "portfolios"); 
+    $available = array("portfolios", "stocks", "portfolios", "whatif",
+    "competitions"); 
     $request = $_SERVER['QUERY_STRING'];
     if($request=='') {
       include 'home.php';
@@ -64,16 +67,16 @@
     }
   ?>
 
-</div>
+</div> <!-- End of content div  -->
 
-<footer class="footer" <?php if ($_SERVER['QUERY_STRING'] == "stocks") {echo "style='bottom:auto;'";} ?>>
+<footer class="footer">
    <div class="container">
       <p class="text-muted"><small>Team UG-2 - Fall 2014 - CS 324</small></p>
       <p class="text-muted"><small><a href="">About</a></small></p>
    </div>
 </footer>
 
-</div>
+</div> <!-- End of wrapper div -->
 
    <!-- Bootstrap core JavaScript -->
    <!-- Placed at the end of the document so the pages load faster -->
