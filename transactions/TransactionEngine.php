@@ -4,8 +4,8 @@
 	to add and retreive data from the transaction repository
 */
 
-require_once "../Logging/LoggingEngine.php";
-require_once "../portfolios/PortfolioEngine.php";
+require_once "/home/ssts/simulatedstocktradingsystem/Logging/LoggingEngine.php";
+require_once "/home/ssts/simulatedstocktradingsystem/portfolios/PortfolioEngine.php";
 
 
 //because there is already a connectDB in PortfolioEngine it does now need to be recreated here
@@ -48,6 +48,11 @@ function sellStock($uid, $portName, $ticker, $numToSell)
 	$portCashAfter = 0;
 	$portShares = 0;
 
+	if(ctype_digit($numToSell))
+		$numToSell = (int)$numToSell;
+
+	if(!is_int($numToSell))
+		throw new InvalidArgumentException('$numToSell must be a number');
 	if($numToSell <= 0)
 		return -1; 
 
@@ -85,6 +90,7 @@ function sellStock($uid, $portName, $ticker, $numToSell)
 	$loggingEngine = new LoggingEngine();
 	$loggingEngine->logTransaction("User ID: ".$uid, true, false, $numToSell. "share(s) of " . $stockName. " for ".$totalCost);
 
+
 	return 1;
 }
 
@@ -109,6 +115,16 @@ function buyStock($uid, $portName, $ticker, $numToBuy)
 
 	$totalCost = 0;
 	$portCash = 0;
+
+//	echo("buyStock: passed parms " . $uid . $portName . $ticker . $numToBuy . "</br>");
+
+	if(ctype_digit($numToBuy))
+		$numToBuy = (int)$numToBuy;
+
+//	echo("buyStocks: param types " . getType($uid) . " " . getType($portName) . " " . getType($ticker) . " " . getType($numToBuy) . "</br>");
+
+	if(!is_int($numToBuy))
+		throw new InvalidArgumentException('$numToBuy must be a number');
 	
 	if($numToBuy <= 0)
 		return -1;
@@ -125,6 +141,7 @@ function buyStock($uid, $portName, $ticker, $numToBuy)
 
 
 	$portCash = getPortfolioCash($uid, $portName);
+//	echo("cash: ".$portCash. "Cost: ". $totalCost."</br>");
 
 	if($portCash == -1) //uid portName combo does not exist
 		return -3;
@@ -133,9 +150,15 @@ function buyStock($uid, $portName, $ticker, $numToBuy)
 		return -4;
 
 	adjustPortfolioCash($uid, $portName, $totalCost *-1);
+//	echo("cash adjusted</br>");
+	$result = addStockAmount($uid, $portName, $ticker, $numToBuy);
+	
+//	echo("is anything going to show up?????\n");
 
-	addStockAmount($uid, $portName, $ticker, $numToBuy);
-
+//	if(is_null($result))
+//		echo("addStockMethod returns null\n");
+//	else
+//		echo($result."\n");
 	insertTransaction($uid, $portName, $ticker, $numToBuy, $stockCost);
 
 	//log
@@ -173,6 +196,9 @@ function getAllUserTrans($uid, $portName)
 		$counter = $counter + 1;
 
 	}
+
+	$request->close();
+	$mysqli->close();
 
 	return $transactions;
 }
