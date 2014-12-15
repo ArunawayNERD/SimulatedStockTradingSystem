@@ -63,6 +63,8 @@
 
 //	echo(addStockAmount(22, "JohnTester2", "IBM", 1)."\n");
 //	echo(removeStockAmount(22, "JohnTester2", "IBM", 1)."\n");
+
+	echo(addStockAmount(22, "John", "AAIT", 1)."\n");
 	?>
 </body>
 </html>

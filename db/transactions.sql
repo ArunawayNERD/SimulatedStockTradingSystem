@@ -10,4 +10,5 @@ create table transactions (
   sharePrice float not null,
   constraint transactions_PK primary key (ts, uid, name),
   foreign key (uid, name) references portfolios(uid, name)
+  on update cascade
 );

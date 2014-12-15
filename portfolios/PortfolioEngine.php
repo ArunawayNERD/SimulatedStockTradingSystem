@@ -17,10 +17,49 @@ function connectDB()
 	
 	$mysqli = new mysqli($host, $user, $pass, $db);
 
-	if($mysqli->connect_error)
+	if($mysqli->connect_error){
+		echo "Failed to connect to MySQL: " . 
+mysqli_connect_error();
 		die($mysqli->connect_error);
+        }
 
 	return $mysqli;
+}
+
+function makeCompPortfolio($uid, $name, $buyIn)
+{
+	$mysqli = connectDB();
+	
+	//check if the portfolio name is taken already
+	$request = $mysqli->prepare("select name from portfolios where uid=? and name=?");
+	$request->bind_param("is", $uid, $name);
+	$request->execute();
+	$request->bind_result($result);
+	$request->fetch();
+
+	if(!is_null($result))
+	{
+		$request->close();
+		$mysqli->close();
+		return false;
+	}
+
+
+	// if the name is not already in use then add the new portfolio.
+	$request = $mysqli->prepare("INSERT INTO portfolios (uid, name, cash, competition) VALUES (?, ?, ?, 1)");
+	$request->bind_param("isd", $uid, $name, $buyIn);
+	$request->execute();
+
+	//free system resources
+	$request->close();
+	$mysqli->close();
+
+	//log portfolio creation.
+	$logger = new LoggingEngine();
+	$logger->logPortCreation("User ID: " . $uid);
+
+	return true;
+
 }
 /*
 	Get a user's active portfolio
@@ -98,12 +137,18 @@ function setActivePortfolio($uid, $name)
 */
 function addStockAmount($uid, $name, $symbol, $num)
 {
-	if(is_float($num) || is_double($num))
+
+//	echo("addStock: passed params " . $uid . $name . $symbol . $num . "</br>");
+//	echo("addStock: passed types " . getType($uid). " " . getType($name) . " " . getType($symbol) . " " . getType($num). "</br>");
+	if(ctype_digit($num))
 		$num = (int)$num;
 
+//	echo("in addStock: Done casting. num = " . $num . "type: ". getType($num). "</br>"); 
+	
 	if(!is_int($num))
 		throw new InvalidArgumentException('$num must be an int');
 
+//	echo("test</br>");
 	if($num < 1)
 	{
 		return 0;
@@ -112,21 +157,30 @@ function addStockAmount($uid, $name, $symbol, $num)
 	$currentTotal = 0;
 	$newTotal = 0;
 
+//	echo("test2</br>");
 	$mysqli = connectDB();
-	
+
+//	echo("test3</br>");
+//	if(is_null($mysqli))
+//		echo("null</br>");
 	
 	//check that the symbol is valid
-	$request = $mysqli->prepare("select symbol from stocks where symbol=?");
+	$request = $mysqli->prepare('select symbol from stocks where symbol=?');
 	$request->bind_param("s", $symbol);
 	$request->execute();
 	$request->bind_result($result);
 	$request->fetch();
 	$request->close();
 
+//	echo("in AddStock: is symbol valid " . $result. "</br>");
+
 	if(is_null($result))
 		return -1;
 	
-	
+
+
+//	echo("in addstock: affter commented </br>");
+
 	//get current shares
 	$request = $mysqli->prepare('select stocks from portfolioStocks where uid=? and name=? and symbol=?');
 	$request->bind_param("iss", $uid, $name, $symbol);
@@ -134,14 +188,19 @@ function addStockAmount($uid, $name, $symbol, $num)
 	$request->bind_result($currentTotal);
 	$request->fetch();
 	$request->close();
+	
+//	echo("in addstock: currentshares = " . $currentTotal."</br>");
 
 	if(is_null($currentTotal)) //if the portfolio does not have the symbol add it
 	{
+
+//		echo("in addstock: current total = null</br>");
 		$request = $mysqli->prepare('insert into portfolioStocks(uid, name, symbol, stocks) values(?, ?, ?, ?)');
 		$request->bind_param("issi", $uid, $name, $symbol, $num);
 		$request->execute();
 		$request->close();
 
+//		echo("n addstock: inserted into table </br>");
 		$loggingEngine = new LoggingEngine();
 		$loggingEngine->logStockShareChange("User ID : ".$uid, $name, $symbol, 0, $num);
 
@@ -183,7 +242,7 @@ function addStockAmount($uid, $name, $symbol, $num)
 */
 function removeStockAmount($uid, $name, $symbol, $num)
 {
-	if(is_float($num) || is_double($num))
+	if(ctype_digit($num))
 		$num = (int)$num;
 
 	if(!is_int($num))
@@ -292,7 +351,19 @@ function deletePortfolio($uid, $name)
 	}
 	
 	$request->close();//close the previous request so it doesnt interfere
+	//delete transactions
+	$request = $mysqli->prepare("delete from transactions where uid=? and name=?");
+	$request->bind_param("is", $uid, $name);
+	$request->execute();
+	$request->close();
 
+	//delete the portfolios stocks from the stock portfolio.
+	$request = $mysqli->prepare("delete from portfolioStocks where uid=? and name=?");
+	$request->bind_param("is", $uid, $name);
+	$request->execute();
+	$request->close();
+
+	//delete the portfolio it self
 	$request = $mysqli->prepare("delete from portfolios where uid=? and name=?");
 	$request->bind_param("is", $uid, $name);
 	$request->execute();
@@ -496,10 +567,6 @@ function makeNewPortfolio($uid, $name)
 	return true;
 }
 
-
-
-
-
 /**
     Given a user Id this method will pull all the portfolio names which belong to this user.
 
@@ -514,7 +581,7 @@ function getUserPortfolios($uid)
 	$mysqli = connectDB();
 
 	$request = $mysqli->prepare("select name, cash
-	  from portfolios where uid=?");
+	  from portfolios where uid=? and competition=0");
 	$request->bind_param("i", $uid);
 	$request->execute();
 	$request->bind_result($result[0], $result[1]);
@@ -550,7 +617,8 @@ function getInactiveUserPortfolios($uid)
 	  from portfolios, activePortfolio where 
 	  portfolios.uid = activePortfolio.uid
 	  and portfolios.uid=?
-	  and activePortfolio.name != portfolios.name");
+	  and activePortfolio.name != portfolios.name
+	  and competition=0");
 	$request->bind_param("i", $uid);
 	$request->execute();
 	$request->bind_result($result[0], $result[1]);
@@ -725,7 +793,7 @@ function getCompetitionState($uid, $name)
 }
 
 /*
-  input: user's id
+  input: user's id and portfolio name
 
   output: an associative array with all the transactions associated
   with the given id
@@ -733,18 +801,18 @@ function getCompetitionState($uid, $name)
   WARNING: INSECURE. DO NOT USE USER INPUT
 */
 
-function getTransactions ($uid) {
+function getTransactions ($uid, $pname) {
 
   $mysqli = connectDB();
   
-  $result = $mysqli->query("select ts, name, symbol, stocks,
-    sharePrice from transactions where uid=$uid");
+  $result = $mysqli->query("select ts, symbol, stocks,
+    sharePrice from transactions where uid=$uid and
+    name=\"$pname\"");
     
   $count=0;
   while($row = $result->fetch_assoc()) {
     $transaction[$count] = array(
       "ts" => $row["ts"], 
-      "name" => $row["name"],
       "symbol" => $row["symbol"], 
       "stocks" => $row["stocks"], 
       "sharePrice" => $row["sharePrice"]
@@ -756,4 +824,101 @@ function getTransactions ($uid) {
 
   return $transaction;
 
+}
+
+/*
+    input: user's id and portfolio name
+    output: assets value
+
+   INSECURE
+
+*/
+
+function getValue ($uid, $name) {
+  $mysqli = connectDB();
+  
+  $result = $mysqli->query("select  
+    last_trade_price, stocks 
+    from portfolioStocks, stocks 
+    where stocks.symbol=portfolioStocks.symbol 
+    and portfolioStocks.name=\"$name\" and uid=$uid;");
+    
+  
+  if($result->num_rows == 0)
+  	return 0;
+  
+  $count=0;
+  while($row = $result->fetch_assoc()) {
+    $equities[$count] = array(
+      "last_trade_price" => $row["last_trade_price"],
+      "stocks" => $row["stocks"] 
+    );
+    $count++;
+  } 
+  
+  $mysqli->close();
+
+  $value=0;
+  foreach($equities as $investment) {
+    $value+=$investment["last_trade_price"]*
+      $investment["stocks"];
+  }
+
+  return $value;
+}
+
+function getTopTen()
+{
+
+	$mysqli = connectDB();
+
+	$ranks = array();
+	$ports =  array();
+
+	$counter =0;
+	$curRank = 0;
+	$lastRankValue = PHP_INT_MAX;
+
+	//get all the portfolios and then sort them by their values. 
+	$results = $mysqli->query('select uid, name from portfolios where competition=0');
+
+	while($row = $results->fetch_assoc())
+	{
+		
+		$value = getValue($row['uid'],$row['name']);
+	
+		if($value > 0)
+		{
+			$port[$counter][0] = $row["name"];
+			$port[$counter][1] = $value;
+			$counter = $counter + 1;
+		}
+	}
+	
+	foreach($port as $key => $row)
+		$values[$key] = $row[1];
+	
+	array_multisort($values, SORT_NUMERIC, SORT_DESC, $port);
+
+	$counter = 0;
+	
+	foreach($port as $key => $row)
+	{
+		$userValue = $row[1];
+
+		if($userValue < $lastRankValue)
+		{
+			$curRank = $curRank + 1;
+			$lastRankValue = $userValue;
+		}
+
+		if($curRank > 10)
+			break;
+		$port[$counter][2] = $curRank;
+		$counter++;
+	}
+
+	$port = array_slice($port, 0, $counter); 
+	
+	return $port;
 }
