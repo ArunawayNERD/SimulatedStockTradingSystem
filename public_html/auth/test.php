@@ -1,3 +1,3 @@
 <?php
-  echo basename("../../Logging/LoggingEngine.php") ;
+ echo("MIKE");	
 ?>

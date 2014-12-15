@@ -5,17 +5,24 @@
 <head>
   <title>SSTS</title> 
 
+   <!--
    <script type="text/javascript" src="jquery-1.11.1.js"></script> 
-   <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+   -->
    
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+   <!--
    <script src="../dist/js/bootstrap.min.js"></script>
+   -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
    <link rel="stylesheet" href="theme.blue.css">
 
   <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
+
+<script type="text/javascript" src="../dist/js/jquery-ui.min.js"></script>
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 
 
 </head>
@@ -80,11 +87,12 @@
 
    <!-- Bootstrap core JavaScript -->
    <!-- Placed at the end of the document so the pages load faster -->
+   <!--
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
    <script src="../dist/js/bootstrap.min.js"></script>
    <script type="text/javascript" src="jquery-1.11.1.js"></script>
    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
-
+-->
    <script>
       $('#alphabet').on('click', 'li a', function() {
       if ($(this).text() == 'All') { //Show all of the stocks
@@ -108,12 +116,12 @@
       });
    </script>
 
-<!-- Add fancyBox -->
+<!-- Add fancyBox 
 <link rel="stylesheet" href="/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 <script type="text/javascript" src="/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 <link rel="stylesheet" href="/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" type="text/css" media="screen" />
 <script type="text/javascript" src="/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
-
+-->
 
 </body>
 </html>

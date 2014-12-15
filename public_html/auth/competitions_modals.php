@@ -1,0 +1,82 @@
+
+<!-- Modal for creating a competition -->
+<div class="modal fade" id="createCompetitionsModal" tabindex="-1" 
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Create a Competition</h4>
+      </div>
+      <div class="modal-body">
+<!-- modal body -->
+<form method="post" action="index.php?competitions">
+  <input type="text" name="compName" value="Competition Name" /> <br />
+  Start: <input type="text" name="startDate" class="datepicker" /> 
+  <select name="startTime">
+    <?php
+      for($i=0; $i<24; $i++)
+        echo "<option value=\"$i:00\">$i:00</option>\n";
+    ?>
+  </select>
+  <br /> 
+    End: <input type="text" name="endDate" class="datepicker" /> 
+  <select name="endTime">
+    <?php
+      for($i=0; $i<24; $i++)
+        echo "<option value=\"$i:00\">$i:00</option>\n";
+    ?>
+  </select>
+  <br />
+  Buy-In:  $ <input type="text" name="buyin" />
+  <br /> 
+  <input type="submit" value="Make New" />
+</form>
+<!-- end modal body -->	
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	       Cancel
+	     </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for buying a stock -->
+<div class="modal fade"
+  id="stockBuyModal" tabindex="-1" 
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Enter Quantity</h4>
+      </div>
+      <div class="modal-body">
+ 
+ <form method="POST" action="index.php?competitions">
+    <input type="number" name="numSharesBuy" class="form-control"/>
+    <input type="hidden" name="buyStock" 
+      value="<?php echo $_POST['selectStock'] ?>" />
+    <button type="submit" class="btn btn-default">
+      Buy
+    </button>
+
+  </form>
+     
+     </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	     Cancel
+	 </button>
+      </div>
+    </div>
+  </div>
+</div>

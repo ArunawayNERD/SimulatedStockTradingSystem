@@ -84,19 +84,19 @@ body {
    color: #fff;
 }
 
-#home-activestats {
+#home-activestats, #home-compbox {
    width: 550px;
    float: left;
    margin: 20px;
 }
 
-#home-leaderboard, #home-compbox {
+#home-leaderboard {
    width: 550px;
    float: right;
    margin: 20px;
 }
 
-@media (max-width: 1260px) and (min-width: 680px) {
+@media (max-width: 1280px) and (min-width: 680px) {
    #home-activestats, #home-leaderboard, #home-compbox {
       float: none;
       margin: 20px auto;
@@ -179,9 +179,9 @@ table.tablesorter thead tr th.headerSortDown {
 }
 
 .leftbox {
-   position:relative;
+   position: relative;
    width: 230px;
-   float:left;
+   float: left;
    top: 10px;
    z-index: 1000;
 }
@@ -192,15 +192,21 @@ table.tablesorter thead tr th.headerSortDown {
 
 .centerbox {
    position: relative;
-   padding: 0px 240px 20px 250px;
+   padding: 0px 320px 20px 250px;
 }
 
 .rightbox {
    position: relative;
    float: right;
    top: -20px;
-   width: 220px;
+   width: 300px;
    z-index: 1000;
+}
+
+#port-stocks {
+   width: 100%;
+   overflow: auto;
+   height: 400px;
 }
 
 .sidebar {
@@ -238,11 +244,11 @@ table.tablesorter thead tr th.headerSortDown {
 
 .port-stats {
    position: absolute;
-   right: 240px;
-   top: 0;
+   right: 320px;
+   top: 20px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 830px) {
    .port-stats {
       position: static;
       right: 0;
@@ -257,7 +263,7 @@ table.tablesorter thead tr th.headerSortDown {
    }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1105px) {
    .centerbox {
       padding-left: 0;
    }
@@ -277,7 +283,7 @@ table.tablesorter thead tr th.headerSortDown {
    }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1105px) {
    #sidebar-exp {
       display: block;
    }
@@ -288,4 +294,31 @@ table.tablesorter thead tr th.headerSortDown {
 
 .dropdown-menu {
     width: 250px !important;
+}
+
+/*What-If Page Styles*/
+.whatif-message {
+   display: block;
+   clear: both;
+}
+
+#whatif-form {
+   z-index: 1000;
+   float: left;
+   width: 250px;
+   position: relative;
+}
+
+#whatIfOutput {
+   position: relative;
+   padding-left: 270px;
+   text-align: center;
+}
+
+#whatIfOutput span {
+   display: inline-block;
+   margin-left: auto;
+   margin-right: auto;
+   font-size: 1.5em;
+   font-weight: bold;
 }

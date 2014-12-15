@@ -47,7 +47,8 @@
             . "<td><input type=\"radio\" name=\"active\" " 
 	        . "value=\"" . $inactivePortfolios[$i][0] . "\" /></td>" 
             . "<td>" . $inactivePortfolios[$i][0] . "</td>"
-	        . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	        . "<td>" . sprintf("$%.2f",$inactivePortfolios[$i][1]) 
+		. "</td>"
 	        . "</tr>\n";
             }
           ?>
@@ -84,7 +85,8 @@
           . "<td><input type=\"radio\" name=\"delete\" " 
 	      . "value=\"" . $inactivePortfolios[$i][0] . "\" /></td>" 
           . "<td>" . $inactivePortfolios[$i][0] . "</td>"
-	      . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	      . "<td>" . sprintf("$%.2f",$inactivePortfolios[$i][1]) 
+	      . "</td>"
 	      . "</tr>\n";
           }
         ?>
@@ -125,7 +127,8 @@
         . "<td><input type=\"radio\" name=\"rename\" " 
         . "value=\"" . $inactivePortfolios[$i][0] . "\" /></td>" 
         . "<td>" . $inactivePortfolios[$i][0] . "</td>"
-	    . "<td>" . $inactivePortfolios[$i][1] . "</td>"
+	      . "<td>" . sprintf("$%.2f",$inactivePortfolios[$i][1]) 
+	    . "</td>"
 	    . "</tr>\n";
        }
        ?>
@@ -170,6 +173,74 @@
       . "value=\"" . $_POST['rename'] . "\" />";
     echo "</form>";
 ?>
+     </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	     Cancel
+	 </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal for buying a stock -->
+<div class="modal fade"
+  id="stockBuyModal" tabindex="-1" 
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Enter Quantity</h4>
+      </div>
+      <div class="modal-body">
+ 
+ <form method="POST" action="index.php?portfolios">
+    <input type="number" name="numSharesBuy" class="form-control"/>
+    <input type="hidden" name="buyStock" 
+      value="<?php echo $_POST['selectStock'] ?>" />
+    <button type="submit" class="btn btn-default">
+      Buy
+    </button>
+
+  </form>
+     
+     </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">
+	     Cancel
+	 </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal for selling a stock -->
+<div class="modal fade"
+  id="stockSellModal" tabindex="-1" 
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+	      <span aria-hidden="true">&times;</span>
+	      <span class="sr-only">Close</span>
+	    </button>
+        <h4 class="modal-title" id="myModalLabel">Enter Quantity</h4>
+      </div>
+      <div class="modal-body">
+ 
+ <form method="POST" action="index.php?portfolios">
+    <input type="number" name="numSharesSell" class="form-control"/>
+    <input type="hidden" name="sellMe" 
+      value="<?php echo $_POST['sellStock'] ?>" />
+    <button type="submit" class="btn btn-default">
+      Sell 
+    </button>
+
+  </form>
+     
      </div>
       <div class="modal-footer">
          <button type="button" class="btn btn-default" data-dismiss="modal">

@@ -124,32 +124,32 @@
 </form>
 
 <!-- selection menu of stocks, filtered by the above search menu --> 
-<form method="POST" action="index.php?portfolios"> 
-  <table class="table">  
+<div id="port-stocks">
+  <table class="table">
     <tr>
       <th>Ticker</th>
-      <th>Co.</th>
       <th>Price</th>
       <th>Change</th>
+      <th></th>
     </tr>
-  </table>
-  <select name="selectStock" size=20 class="form-control">
   <?php
     include_once '/home/ssts/simulatedstocktradingsystem/stockSearch.php';
     $stockList = stockSearch($_POST['search']);
     foreach($stockList as $stock) {
-      echo "<option value=\"" . $stock["symbol"] . "\">";
-      echo $stock["symbol"]; 
-      echo $stock["last_trade_price"];
-      echo $stock["price_change"];
-      echo "</option>\n";
+      echo "<tr>";
+      echo "<td>" . $stock["symbol"] . "</td>"; 
+      echo "<td>" . $stock["last_trade_price"] . "</td>";
+      echo "<td>" . $stock["price_change"] . "</td>";
+      echo "<td><form method=\"POST\" action=\"index.php?portfolios\">";
+      echo "<input type=\"submit\" value=\"Buy\" />"; 
+      echo "<input type=\"hidden\" name=\"selectStock\" ";
+      echo "value=\"" . $stock["symbol"] . "\" />";
+      echo "</form></td>";
+      echo "</tr>\n";
     }
   ?>
-  </select>
-  <button type="submit" class="btn btn-default" >
-    Buy
-  </button>
-</form>
+  </table>
+</div>
 <p>
  <?php 
 /*
