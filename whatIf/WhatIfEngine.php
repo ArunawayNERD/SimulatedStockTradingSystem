@@ -44,15 +44,16 @@ function connectDataBase()
 		profit - the currentTotal - histTotal
 		
 */
-function getWhatIf($ticker, $year, $month, $day, $numShares)
+function getWhatIf($ticker, $year, $month, $day, $eYear, $eMonth, $eDay, $numShares)
 {
+	
 	$results = array();
-
-	$results["ticker"] = $ticker;
-	$results["numShares"] = $numShares;
 
 	if(!is_numeric($year) || !is_numeric($month) || !is_numeric($day) || !is_numeric($numShares))
 		return -1;
+
+	if($numShares < 0)
+		return -5;
 
 	$mysqli = connectDataBase();
 
@@ -70,7 +71,9 @@ function getWhatIf($ticker, $year, $month, $day, $numShares)
 		return -2;
 	}
 
-	$results["name"] = $result;
+	$results["ticker"] = $ticker;
+	$results["name"] = $result;	
+	$results["numShares"] = $numShares;
 
 	//build the two date formats because yahoos two apis dont play together nicely 
 	if(ctype_digit($month))
@@ -83,17 +86,35 @@ function getWhatIf($ticker, $year, $month, $day, $numShares)
 
 	if(ctype_digit($day))
 	{
-		$day  = (int) $month; 
+		$day  = (int) $day; 
 
 		if($day < 10)
 			$day = "0".$day;
 	}
 
+	if(ctype_digit($eMonth))
+	{
+		$eMonth = (int) $eMonth;
+		
+		if($eMonth < 10)
+			$eMonth = "0".$eMonth;
+	}
+
+	if(ctype_digit($eDay))
+	{
+		$eDay  = (int) $eDay; 
+
+		if($eDay < 10)
+			$eDay = "0".$eDay;
+	}
 
 	$date1 = ($year . "-" . $month . "-" . $day);
 	$date2 = ($month . "/" . $day . "/" . $year);
+	
+	$eDate1 = ($eYear . "-" . $eMonth . "-" . $eDay);
+	$eDate2 = ($eMonth . "/" . $eDay . "/" . $eYear);
 
-	echo(($date1) . ($date2));
+
 	//get hist closing price.
 	$request = $mysqli->prepare("select closing_price from history where symbol=? and trade_date=?"); 
 	$request->bind_param("ss", $ticker, $date1);
@@ -124,22 +145,61 @@ function getWhatIf($ticker, $year, $month, $day, $numShares)
 	$results["histTotal"] = $results["histPrice"]  * $results["numShares"];
 
 
-	//pull current data and price
-	$request = $mysqli->prepare('select last_trade_price, last_trade_date from stocks where symbol=?');
-	$request->bind_param("s", $ticker);
-	$request->execute();
-	$request->bind_result($result1,  $result2);
-	$request->fetch();
+	//pull current date and format month day if needed
+	$today = date("m/d/Y");
 	
-	$request->close();
-	$mysqli->close();
+	//compare to the end date to determin with db to pull from
+	if($eDate2 == $today)
+	{
+		//pull current data and price
+		$request = $mysqli->prepare('select last_trade_price, last_trade_date from stocks where symbol=?');
+		$request->bind_param("s", $ticker);
+		$request->execute();
+		$request->bind_result($result1,  $result2);
+		$request->fetch();
+	
+		$request->close();
+		$mysqli->close();
+	
+		$results["endPrice"] = $result1;
+		$results["endDate"] = $result2;
 
-	$results["currentPrice"] = $result1;
-	$results["currentDate"] = $result2;
+		$results["endTotal"] = $results["endPrice"] * $results["numShares"];
+		$results["profit"] = $results["endTotal"] - $results["histTotal"];
+	}
+	
+	else
+	{
+		$request = $mysqli->prepare("select closing_price from history where symbol=? and trade_date=?"); 
+		$request->bind_param("ss", $ticker, $eDate1);
+		$request->execute();
+		$request->bind_result($result);
+		$request->fetch();
 
-	$results["currentTotal"] = $results["currentPrice"] * $results["numShares"];
-	$results["profit"] = $results["currentTotal"] - $results["histTotal"];
+		if(is_null($result))
+		{
+			$request->bind_param("ss", $ticker, $eDate2);
+			$request->execute();
+			$request->bind_result($result);
+			$request->fetch();
 
+			if(is_null($result))
+			{
+				$request->close();
+				$mysqli->close();
+
+				return -4;
+			}
+		}
+
+		$request->close();
+
+		$results["endPrice"] = $result;
+		$results["endDate"] = $eDate2;
+		$results["endTotal"] = $results["endPrice"] * $results["numShares"];
+		$results["profit"] = $results["endTotal"] - $results["histTotal"];
+
+	}
 	//log what if
 	$loggingEngine = new LoggingEngine();
 	$loggingEngine->logWhatIfScenario("User ID: ". $uid);

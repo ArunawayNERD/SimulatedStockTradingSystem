@@ -733,5 +733,7 @@ function getOpponentStocks ($uid, $pname) {
 */
 
 function getCompPortfolio ($uid, $pname) {
-  
+  $mysqli=connectDB();
+
+  $result=$mysqli->query("
 }
