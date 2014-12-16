@@ -1,3 +1,5 @@
+drop table if exists history;
+
 CREATE TABLE history (
   symbol            VARCHAR(5)    not null,
   name              VARCHAR(50)   not null, 
