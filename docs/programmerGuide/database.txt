@@ -1,0 +1,119 @@
+This document includes a tabular description of the database, and
+a brief overview.
+
+The following is a list of all the tables in the SSTS database.
+The format is:
+table:
+  column
+  column
+
+users: 
+  id (primary key)
+  username
+  password
+
+stocks: 
+  symbol (primary key)
+  name 
+  last_trade_price  
+  open_price      
+  price_change     
+  last_trade_date  
+  last_trade_time 
+
+history: 
+  symbol (primary key)
+  trade_date (primary key)
+  name           
+  closing_price   
+
+portfolios: 
+  uid  (primary key) references users(id)
+  name (primary key) 
+  cash 
+  competition (boolean) 
+
+activePortfolio: 
+  uid (primary key) references portfolios(uid)
+  name (primary key) references portfolios(name)
+
+portfolioStocks:
+  uid  (primary key) references portfolios(uid)
+  name (primary key) references portfolios(name)
+  symbol (primary key)
+  stocks 
+
+transactions: 
+  time (primary key)
+  uid (primary key) references portfolios (uid) 
+  name (primary key) references portfolios (name)
+  symbol 
+  stocks 
+  sharePrice 
+
+competitions: 
+  cid (primary key) 
+  name 
+  start_time 
+  end_time 
+  buyin 
+  uid references portfolios(uid) 
+  creator references portfolios(name)
+  status (-1,0,1)
+
+players 
+  cid (primary key) references competitions (cid) 
+  uid (primary key) references portfolios (uid)
+  pname (primary key) references portfolios(name) 
+  compName (primary key) references portfolios(name) 
+  active 
+
+winners 
+  cid (primary key) 
+  name 
+  start_time 
+  end_time 
+  buyin 
+  uid 
+  creator 
+  top1 
+  top1value 
+  top2 
+  top2value 
+  top3 
+  top3value 
+
+Overview
+
+Most of the tables are self-explanatory.  Users contains the registered
+users. The passwords are hashed and salted by prepending the username
+to the front of the password.
+
+Portfolios stores stock portfolios.  The competition boolean 
+indicates whether the portfolio is a competition portfolio
+
+The status for the competition table can only be -1, 0, or 1.  The value
+-1 means the competition is over; 0 means the competition has yet to begin,
+and 1 means the competition is ongoing.
+
+The players table is meant to relate each competitor with the 
+competition and the non-competitive portfolio.
+
+All tables in the database are in flux, with the exception of the
+winners table.  The point of the winners table is store information
+about competition results.  It contains no foreign keys so the
+information need  not be deleted.  The column top1 is the portfolio
+name of the top ranked player and top1value is the value of that
+portfolio.
+
+The database contains one trigger on the users table.  It is listed below.
+
+create trigger default_portfolio 
+after insert on users
+for each row
+    insert into portfolios 
+      values (new.id, new.username, 100000, false);
+
+The purpose of this trigger is to create a portfolio for the user
+upon registration.  The portfolio name defaults to the name of the
+registered user.

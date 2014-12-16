@@ -1,0 +1,36 @@
+This document contains information on the StockEngine module of the SSTS system.
+This document is intended for the system admin(s) or developers wishing to build
+on the current system.
+
+All the file which make up the stock engine module are found in the StockEngine Folder.
+
+The core file is the StockApiModule.php This is the file responsible for pulling
+the nasdaq and dowjones stock data. It does this by sending api calls to the 
+yahoo finance api. 
+
+In the Ticker folder there are two text files. These files contain strings
+of up to 200 separate stock tickers. The StockApiModule builds the api call urls
+by taking this lines form the text files. The lines are limited to 200 tickers 
+because that is the limit set by yahoo per api call. 
+
+In the StockData folder there are two.csv files. As the StockApiModule is pulling
+data from the nasdaq and dowjones it is concatenated into the those two files.
+when the cron job runs it moves that data into the stocks database.
+
+Below is the documentation from the StockApiModule.php file
+
+
+/**
+ * Function to pull stock data from the yahoo api.
+ *
+ * The data is pulled from both the Nasdaq and Dow Jones markets.
+ *
+ * The data is stored in 2 csv files found in the folder .\StockData
+ */
+function pullStockData()
+
+
+/**
+ * If old stock data remains from last stock update delete it.
+ */
+function cleanOldData()

@@ -1,0 +1,38 @@
+This document contains notes concerning the website implementation.
+
+- The creds.php file contains all the database login information.
+  Its location is in public_html. If you need database access via php,
+  make sure to include 'creds.php'.  Check the file for variable names.
+
+- The public_html folder is set up so that all parts of the website
+  requiring authorized access should be put in the auth folder.
+
+- At the top of every publicly-accessible document in the auth folder,
+  include 'session.php'.  This php routine checks if the user is logged
+  in and kicks out unauthorized users.  The include statement
+  must be included before any other code or html; otherwise, it will not
+  work.
+
+- Include logout.php on every publicly-accessible page located
+  in the auth folder. This routine deallocates all session variables,
+  returns the page to the login, and deactivates any cookies.
+
+- The session variables available (if session.php is included)
+  are id, active_portfolio, username, and a hashed password.
+
+- All 3rd party libraries are located in public_html/dist.
+
+- PHP interfaces with the database through mysqli.
+
+- In the auth folder, index.php contains the skeleton html and php for 
+  the authorized sections of the website.  To navigate, index.php reads
+  the query string and includes the file. For example, for the URL 
+  index.php?portfolios, the file portfolios.php is included.
+  The index.php file contains an array of valid include files.  If your file
+  is not included in this array, it will not load.  Only files ending
+  in .php will be included.
+
+- The website relies heavily on Bootstrap, jQuery, jQuery-ui and php. All
+  are included in the distribution.
+
+- Custom styling is included in auth/styles.css and signin.css.

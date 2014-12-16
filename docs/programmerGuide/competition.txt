@@ -1,0 +1,289 @@
+This document contains information on Competition module of the SSTS system.
+This document is intended for the system admin(s) or developers wishing to build
+on the current system.
+
+The competitions module has 2 files. One is CompetitioEngine.php and the other is Player.php
+The CompetitionEngine file holds all the "guts" of the competition engine. This is were all the functions 
+that handle creating competition, adding players, removing players etc exist. The Players.php just 
+defines a php object to hold data from the players db.
+
+Below is the documentation from the CompetitionEngine.php file. This documentation is in a
+semi Javadoc style where. The comments list the what the name does, it's parameters, 
+what it returns and key/column information if the return value is an array.  
+
+/*
+	Create a new competition and adds it to competitions table.
+	This method also auto adds the creator to the players table
+	
+	$owner - the uid of the creator
+	$ownerPort - the owners source portfolio
+	$compName - the competitions name
+	$strat - the timestamp for when the competition starts
+	$end - the timestamp for when the competition ends
+	$buyin - the amount it costs to enter the competition.
+	
+	returns -1 (from addUser) if the cid doesn't exist
+		-2 (from addUser) if the user is already in the competition
+		-3 (from addUser) if the source portfolio is in another active competition
+		-4 (from addUser) if the competition has already started
+		-5 (from addUser) if the uid/sourcePort combo doesn't exist in the database
+		-6 (from addUser) if the sourcePort doesn't have enough cash
+		-7 (from addUser) if the virtualPortfolio can be created (already exists in portfolio table)
+		0 if the buyin is not numeric
+		1 if the competition was created
+		
+*/
+function createComp($owner, $ownerPort, $compName, $start, $end, $buyIn)
+
+
+/*
+	Adds a user to a competition. IE adds them to the players table
+	
+	$cid - the id of the competition that the user will be added to
+	$uid - the user's id that will be added to the competition
+	$sourcePort - the name of the portfolio to take the buyin from.
+	
+	returns -1 if the cid does not exist in the table 
+		-2 if the user is already in the competition
+		-3 if the source portfolio is in another active competition
+		-4 if the competition has already started
+		-5 if the uid/sourcePort combo doesn't exist in the database
+		-6 if the sourcePort doest have enough cash 
+		-7 if the virtualPortfolio can be created (already exists in portfolio table)
+*/
+function addUser($cid, $uid, $sourcePort)
+
+
+/*
+	Checks if the competition associated with the entered $cid is ended or not
+	
+	$cid - the competition's cid
+	
+	return  true if the competition is over 
+		false if the competition is not over
+*/
+function isCompEnded($cid)
+
+
+/*
+	Handles a user leaving a competition
+	
+	$cid - the cid for the competition to leave
+	$uid - the uid for the user who is leaving
+	
+	return  -1 if the competition is in progress
+		-2 if the user could not be removed from the comp
+		-3 if the user does not have a portfolio in this comp
+		-4 if the entered cid or uid is not numeric
+		1 if the user left successfully
+		2 if the user is the owner. ended the comp
+*/
+function leaveComp($cid, $uid)
+
+
+/*
+	removes a single user from a competition 
+	
+	$cid the competition id to remove from
+	$uid the user id to remove;
+	$pName - the name of the source portfolio
+	$vName - the name of the virtual portfolio
+	
+	returns 1 if the user was removed
+*/
+function removeUser($cid, $uid, $pName, $vName)
+
+
+/*
+	starts a competition. if the owner is the only one it ends the competition. 
+	
+	$cid - the competition id to start
+	
+	returns	-1 if the owner is the only player
+		 1 if the competition was started successfully
+*/
+function startComp($cid)
+
+
+/*
+	ends a competition
+	
+	steps to end	1 move current competition row into winners
+					2 delete the player rows
+					3 delete the competition
+					4 remove all the users (delete the vertical portfolios)
+					5 if the owner was the only person delete the winner row
+	
+	$cid the competition id to end
+*/
+function endComp($cid)
+
+
+/*
+	Get an array containing the competition information for competitions 
+	(waiting and ongoing) that the user is currently in.
+	
+	$uid  the users id
+	
+	returns a 2-D assoc array of values where one row in the array is per competition
+	
+	keys	name - the competition name
+			start_time - the time the competition starts
+			end_time - the time when the competition end
+			buyin - the buyin amount
+			creator - the owners portfolio used to create the comp
+			cid - the competitions id
+*/
+function listUsersCurrentComps($uid)
+
+
+/*
+	lists all the competitions that a user could join with a portfolio.
+	
+	$uid - the users id
+	$pname - the users portfolio to check with
+	
+	returns a 2D array where each row is a available compeition and the columns are an 
+			assoc array holding  hold the competition info. 
+	
+	keys	name - the competition name
+			start_time - the time the competition starts
+			end_time - the time when the competition end
+			buyin - the buyin amount
+			creator - the owners portfolio used to create the comp
+			cid - the competitions id
+*/
+function listAvailableComps($uid, $pname)
+
+
+/*
+	get a list of the players in a competition
+	
+	$cid - the competitions id
+	
+	returns -1 if there is no one in the competition
+		1D array of player objects;
+*/
+function getCompPlayers($cid)
+
+
+/*
+	gets the settings for a competition
+	
+	$cid the competition id
+	
+	returns -1 if the cid doesn't exist in the table
+			1D assoc array of values holding the competition settings
+	
+	keys	name - the competition name
+			start_time - the time the competition starts
+			end_time - the time when the competition end
+			buyin - the buyin amount
+			creator - the owners portfolio used to create the comp
+			cid - the competitions id
+	
+*/
+function getCompSettings($cid)
+
+
+/*
+	sorts the players in a competition
+	
+	$cid - the competition id
+	
+	returns -1 if the competition has no players
+			a 2D array where row corresponds to rank. 
+	
+	columns	[][0] - source portfolio name
+			[][1] - value of the competition portfolio
+			[][2] - the users uid
+*/
+function sortPlayersByRank($cid)
+
+
+/*
+	gets the rank (standing) of a user in a competition
+	
+	$cid - the competitions id
+	$uid - the user id
+	
+	returns 0 if the cid isn't valid
+			$rank - the users current rank in the comp
+*/
+function getStanding($cid, $uid)
+
+
+/*
+	Gets the top 3 players in a competition based on value
+	 
+	$cid - the competitions cid
+	
+	returns a 2D array of up to 3 rows.
+	
+	columns	[][0] - source portfolio name
+			[][1] - value of the competition portfolio
+			[][2] - the users uid
+*/
+function getTopThree($cid)
+
+
+/*
+     input: user id
+     output: an array of portfolios that are not currently
+     involved in a competition
+     WARNING: DO NOT BLINDLY ENTER USER INPUT. NOT SAFE.
+*/
+function getNonCompetingPortfolios($uid)
+ 
+
+/*
+   input: user id, portfolio name
+   output: boolean
+     true if in an active competition
+     false otherwise
+*/
+function isCompeting ($uid, $pname) 
+
+
+/*
+	get the portfolios used by a user in a competition
+	
+	$cid - the competition id
+	$uid - the user id
+	
+	returns 0 if the user is not in that competition 
+			1D assoc array containing the portfolio information
+	
+	keys	pname - the source portfolio used
+			compName - the name of the virtual portfolio
+*/
+function getCompPortfolios($cid, $uid)
+
+
+/* 
+    input: user id and portfolio name
+    output: an array containing opponent names
+*/
+function getOpponentNames ($uid, $pname) 
+
+
+/* 
+    input: user id and portfolio name
+    output: an array containing opponent stocks 
+*/
+function getOpponentStocks ($uid, $pname)
+
+
+/*
+  input: user id and portfolio name
+  output: name of the virtual competition portfolio
+*/
+function getCompPortfolio ($uid, $pname) 
+
+
+/*
+    input: none
+    output: an associative array of info pertaining to 
+    past competitions
+*/
+function getPastComps ()

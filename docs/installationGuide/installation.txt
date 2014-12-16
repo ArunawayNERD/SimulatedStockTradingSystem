@@ -1,0 +1,72 @@
+The following document contains the installation guide for the
+Simulated Stock Trading System (SSTS).
+
+1. Requirements
+    The SSTS requires the following software: 
+       - cron (or equivalent scheduling system) 
+       - PHP 5.5.18 
+       - MariaDB (or equivalent SQL server) 
+       - Apache (or equivalent web server)
+       - Unix or Unix-like environment
+       - Internet Connection
+    The SSTS has been tested extensively on a LAMP (Linux, Apache,
+MariaDB, PHP) stack running Fedora 20 (Heisenbug).  SSTS may operate
+without problem in enivironments similar to the listed requirements, but 
+it is only guaranteed to work on a properly-configured LAMP server.
+
+2. Source Files
+    SSTS requires that the folder simulatedstocktradingsystem is located
+in the /home/ssts/ directory.  This was necessary to work around the
+problems presented when using relative include paths in PHP.  The 
+recommended method for ensuring proper installation is to create an ssts
+user account on the system and place the
+simulatedstocktradingsystem directory in the user's home directory.
+
+3. Apache Configuration
+    Apache must be configured for PHP.  SSTS relies heavily on PHP. 
+Apache must also be set up to serve the web pages located in the public_html
+folder, which itself is in simulatedstocktradingsystem. 
+
+4. Database Configuration
+   All the database configuration files are located in 
+simulatedstocktradingsystem/db. Each file ending in .sql builds a table
+in the database.  The file ssts.sql will build the entire database
+necessary for SSTS to run properly.  All the tables will be empty, but
+the structure will be in place.  The recommended way to install the 
+database structure is to run 'source ssts.sql;' from within
+MariaDB.
+
+5.  Cron Jobs
+    SSTS makes use of cron for all of its software scheduling needs.
+All cron source files are located in simulatedstocktradingsystem/cron.
+Each individual cron job is located in its own folder.  The recommended
+method for installing the cron jobs is to run "crontab cronJobs.txt" from
+the command line within the cron folder.  You can verify installation by
+the commnd "crontab -l".
+
+6.  Populate Historical Database 
+    For the complete SSTS experience, you need to upload historical
+Populating the Historical Database:
+
+Follow these steps to populate the historical database:
+
+1)      Ensure that there is a suitable table in the database that will act as an intermediary between the stock data load file and the history table. Only three fields of data are relevant and these will be marked with the NOT NULL flag in order to ensure its existence. This intermediary must contain the following fields:
+date VARCHAR(10) NOT NULL,
+open int,
+high int,
+low int,
+close VARCHAR(10) NOT NULL,
+volume int,
+adj int,
+name VARCHAR(5) NOT NULL
+2)      Ensure that in the historical_upload directory, there are 3 files (stockpull.php, histparse.php, dbstocks.txt) and 2 folders (files, historical).
+3)      First execute the stockpull.php file.  This will populate the files folder with individual, stock .csv files. The process should take no longer than half an hour.
+4)      Once the data has been pulled, execute the histparse.php file. This will populate the historical folder.
+5)      Once all files have been modified, move into the historical folder and execute the following command:
+Cat *.csv > load.csv
+This will combine all the files into one large .csv file.
+6)      Load the data from the load.csv file into the intermediary table mentioned above. This will sort all the data for you, even the unnecessary. The command should look similar to:
+LOAD DATA LOCAL INFILE ‘load.csv’ INTO TABLE IntermediaryTableName FIELDS TERMINATED BY ‘,’;
+7)      Load the data from the date, close and name columns from the intermediary into the history table. The command should look similar to:
+INSERT IGNORE INTO history(symbol,trade_date,closing_price) SELECT name, date, close FROM IntermediaryTableName;
+

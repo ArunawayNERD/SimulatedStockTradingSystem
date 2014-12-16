@@ -9,7 +9,7 @@
    executed stockpull.php.
 */
 
-$dir = "../RafsPlayground/files/";
+$dir = "../historical_upload/files/";
 $files = scandir($dir);
 
 foreach($files as $name){
@@ -17,7 +17,7 @@ foreach($files as $name){
   $handle = str_replace("Date,Open,High,Low,Close,Volume,Adj Close\n" , "" , $handle);
   $handle = str_replace("\n" , ",$name\n" , $handle);
   $handle = str_replace(".csv" , "," , $handle);
-  file_put_contents("../RafsPlayground/historical/$name.csv", $handle);
+  file_put_contents("../historical_upload/historical/$name.csv", $handle);
 
 }
 ?>

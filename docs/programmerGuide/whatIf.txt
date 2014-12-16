@@ -1,0 +1,48 @@
+This document contains information on the WhatIf module of the SSTS system.
+This document is intended for the system admin(s) or developers wishing to build
+on the current system.
+
+The WhatIf module is only a single file. The WhatIfEngine.php file holds the method to generate a
+what if scenario. The parameter, and return values are described below.
+
+
+/*
+	connects to the mysql database and returns a mysqli object
+*/
+function connectDataBase()
+
+/*
+	creates and logs a what if scenario
+
+	$ticker - the ticker to preform the scenario on
+	$year - the historical year(numeric string or number)
+	$month - the historical month (numeric string or number)
+	$day - the historical day (numeric string or number)
+	$numShares - the number of shares to be "bought" on the hist date
+
+	returns -1 if the year, month, day, or numShare is not numeric
+			-2 the stock ticker does not exist in the stock db
+			-3 there is no historical data stored for the input date
+			$results An array containing the results of the scenario
+
+	results[] indexes:
+
+		ticker - the stock's ticker symbol
+		name - the name of the stock
+		numShares - the number of shares to preform scenario on
+		
+		histDate - the date to start the scenario
+		histPrice - the price per share at the histDate
+		histTotal - the histPrice * numShares
+
+		endDate - the date when the what if is submitted
+		endPrice - last trade price 
+		endTotal - currentTotal * numShares
+
+		profit - the currentTotal - histTotal
+		
+*/
+function getWhatIf($ticker, $year, $month, $day, $eYear, $eMonth, $eDay, $numShares)
+
+
+	

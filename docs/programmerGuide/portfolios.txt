@@ -1,0 +1,209 @@
+This document contains information on the Portfolio module of the SSTS system.
+This document is intended for the system admin(s) or developers wishing to build
+on the current system.
+
+The Portfolio module has 2 files. One is PrtfolioEngine.php and the other is Stock.php
+The PortfolioEngine file holds all the "guts" of the portfolio module. This is were all functions 
+that handle creating Portfolio, adding stocks, removing stock, etc exist. The Stock.php just 
+defines a php object to hold data from the portfolios database.
+
+Below is the documentation from the portfolioEngine.php file. This documentation is in a
+semi Javadoc style where the comments list what the function does, it's parameters, 
+what it returns.
+
+
+/**
+    Connects to the ssts database and returns a mysqli object.
+*/
+function connectDB()
+
+
+/*
+	Exact same as makeNewPortfolio except that this accepts a param for the buyin amount
+*/
+function makeCompPortfolio($uid, $name, $buyIn)
+
+
+/*
+	Get a user's active portfolio
+
+	returns a sting with the name of the uid's active portfolio 
+			null if that uid does not have an active portfolio
+*/
+function getActivePortfolio($uid) 
+
+
+
+/**
+	Sets a users active portfolio
+
+	returns 1 if the active portfolio was set
+*/
+function setActivePortfolio($uid, $name)
+
+
+/** 
+	adds a numbers of stock
+
+	$uid - the users id
+	$name - name of the portfolio to update
+	$symbol - ticker for the stock to be updated
+	$num - the amount of stocks to buy
+
+	returns -1 if the ticker does not exist in the stock database
+			0 nothing updated because change amount < 1
+			1 added  the num shares
+			2 added nums shares and added symbol into table
+*/
+function addStockAmount($uid, $name, $symbol, $num)
+
+
+
+/**
+	removes a number of stocks owned
+
+	$uid - the users id 
+	$name - the portfolio who owns the stocks 
+	$symbol - the stock ticker to update
+	$num - the amount of stocks 
+
+
+	returns -3 if the stock ticker does not exist in the database
+			-2 if num is less than or equal to 0. you cant sell a negative amount of stocks
+			-1 if the portfolio does not have the symbol.
+	         0 no change because the new total would be below 0
+			1 stock amount changed
+			2 new total was 0 and stock deleted from table
+*/
+function removeStockAmount($uid, $name, $symbol, $num)
+
+
+
+/**
+    Delete a portfolio from the database.
+
+    returns 0 if the portfolio does not exist.
+            1 is the portfolio was deleted
+*/
+function deletePortfolio($uid, $name)
+
+
+
+/**
+   Changes the amount of cash a portfolio has by the amount of the parameter $change
+
+   returns -1 if a portfolio with $uid and/or the $name does not exist
+           0 if the change amount would put the total money below 0. (does not chnage the cash value in this case)
+	   1 if the cash was changed by the amount in $change
+*/
+function adjustPortfolioCash($uid, $name, $change)
+
+
+/**
+	sets the amount of cash a portfolio has.
+
+	return - 0 if the the action failed due to the user not having a portfolio with the supplied name.
+	       - 1 if the portfolio's cash was sucessfuly changed.
+*/
+function setPortfolioCash($uid, $name, $oldCash, $cash)
+
+
+/**
+    Set changes the name of the portfolio
+
+    returns - -1 if the name was not changed because the user does not have a portfolio with the old name
+    	    - 0 if the name was not changed due to a user already having a portfolio with that name.
+    	    - 1 if the name was changed
+*/
+function changePortfolioName($uid, $oldName, $newName)
+
+
+/**
+    Creat a new portfolio and add it to the database
+
+    returns - false if the user already has a portfolio with that name. 
+            - true if the portfolio was successfully created. 
+*/
+function makeNewPortfolio($uid, $name)
+
+
+/**
+    Given a user Id this method will pull all the portfolio names which belong to this user.
+
+    $uid - the id of the user
+
+    $returns - A 2D array. Each element of the array is
+    an array containing the portfolio name and its cash.
+*/
+function getUserPortfolios($uid)
+
+
+/**
+    Given a user Id this method will pull all the inactive portfolios which belong to this user.
+
+    $uid - the id of the user
+
+    $returns - A 2D array. Each element of the array is
+    an array containing the portfolio name and its cash.
+*/
+function getInactiveUserPortfolios($uid)
+
+/**
+    Gets a single stock owned by the portfolio from the database
+
+*/
+function getSingleStock($uid, $name, $symbol)
+
+
+/**
+* Returns all the stocks that a portfolio has. 
+* 
+* returns an array of stock objects
+*/
+function getAllStocks($uid, $name)
+
+
+/**
+    Pulls a portfolios current cash amount from the portfolio database.
+    
+    $uid - The user id of the user who owns the portfolio
+    $portName - the name of the portfolio from which the cash amount is pulled
+
+    returns - the cash amount of the portfolio or -1 if the portfolio uid combo does not exist
+
+*/
+function getPortfolioCash($uid, $portName)
+
+
+
+/**
+   Pulls the competition status for  given 
+   portfolio from the portfolio data base
+
+   $uid - the owner's uid
+   $name - name of the portfolio from which the status should be pulled
+ 
+   returns - the competition status of the portfolio 
+*/
+function getCompetitionState($uid, $name)
+
+
+/*
+  input: user's id and portfolio name
+
+  output: an associative array with all the transactions associated
+  with the given id
+
+  WARNING: INSECURE. DO NOT USE USER INPUT
+*/
+
+function getTransactions ($uid, $pname) 
+
+/*
+    input: user's id and portfolio name
+    output: assets value
+
+   INSECURE
+
+*/
+function getValue ($uid, $name) 

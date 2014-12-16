@@ -1,4 +1,4 @@
-This provides documention for the methods in the Logging engine php file
+This provides documentation for the methods in the Logging engine php file
 
 The logging engine is set up in object oriented fassion,so a LoggingEngine
 object will have to be created before the methods can be used.
