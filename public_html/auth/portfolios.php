@@ -15,19 +15,19 @@
 
   // make a new portfolio
   if(trim($_POST['newName']) != '') {
-    makeNewPortfolio($uid, $_POST['newName']);
+    $status=makeNewPortfolio($uid, $_POST['newName']);
   }
   // set the new active portfolio if submitted
   if($_POST['active']!='')
-    setActivePortfolio($uid, $_POST['active'] );
+    $status=setActivePortfolio($uid, $_POST['active'] );
 
   // deletes portfolio if submitted
     if($_POST['delete'] != '') 
-      deletePortfolio($uid,$_POST['delete']);
+      $status=deletePortfolio($uid,$_POST['delete']);
 
   // renames portfolio if submitted
   if($_POST['changeName'] != '' && trim($_POST['renamedName'] != '')) { 
-    changePortfolioName($uid,$_POST['changeName'],
+    $status=changePortfolioName($uid,$_POST['changeName'],
       trim($_POST['renamedName']));
   }
 
@@ -36,12 +36,12 @@
 
   // purchase a stock 
   if(is_numeric($_POST['numSharesBuy']) && $_POST['numSharesBuy']>0) {
-    buyStock($uid, $_SESSION['active_portfolio'], 
+    $status=buyStock($uid, $_SESSION['active_portfolio'], 
       $_POST['buyStock'], $_POST['numSharesBuy']); 
   }
   // sell a stock 
   if(is_numeric($_POST['numSharesSell']) && $_POST['numSharesSell']>0) {
-    sellStock($uid, $_SESSION['active_portfolio'], 
+    $status=sellStock($uid, $_SESSION['active_portfolio'], 
       $_POST['sellMe'], $_POST['numSharesSell']); 
   }
   //get active portfolio's cash
@@ -52,6 +52,9 @@
   $inactivePortfolios = getInactiveUserPortfolios($uid);
   //get the active portfolio's investments
   $equities = getAllStocks($uid, $_SESSION['active_portfolio']);
+
+  if(isset($status) && ($status!=true || $status<=0))
+    echo "<p style=\"color: red\"> ERROR </p>";
 ?>
 
 <!-- Overall Container -->

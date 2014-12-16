@@ -48,11 +48,11 @@
   //join a competition
   if($_POST['joinComp']!='') {
     $status = addUser($_POST['joinComp'], $uid, $portfolio);
-    //echo $status;
+    echo $status;
   }
   // leave a competition
   if($_POST['leaveComp']!='') {
-    $status=leaveComp($_POST['leaveComp'], $uid);
+    leaveComp($_POST['leaveComp'], $uid);
   }
   // get competition portfolio
   if(isCompeting($uid, $portfolio))
@@ -61,17 +61,13 @@
   //buy stock
   $numSharesBuy=$_POST['numSharesBuy'];
   if(ctype_digit($numSharesBuy) && $numSharesBuy>0)
-    $status=buyStock($uid, $compPortfolio, 
-      $_POST['buyStock'], $numSharesBuy); 
+    buyStock($uid, $compPortfolio, $_POST['buyStock'], $numSharesBuy); 
   
   // sell a stock 
   if(ctype_digit($_POST['numSharesSell']) && $_POST['numSharesSell']>0) {
-    $status=sellStock($uid, $compPortfolio, 
+    sellStock($uid, $compPortfolio, 
       $_POST['sellMe'], $_POST['numSharesSell']); 
   }
-
-  if(isset($status) && ($status!=true || $status<=0))
-    echo "<p style=\"color: red\"> ERROR </p>";
 ?>
 
 <h1>Competitions: <?php echo $portfolio; ?></h1>

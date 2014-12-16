@@ -66,7 +66,6 @@
 </button>
 </div>
 
-<!-- clicking the button shows the set active portfolio modal -->
 <div class="side-button">
 <form method="POST" action="index.php?portfolios" class="form-inline" role="form">
    <div class="form-group">
@@ -145,8 +144,8 @@
 <h3>Buy Shares</h3>
 
 <!-- search bar -->
-<form class="form-inline" method="POST" action="index.php?portfolios">
-  <input type="text" name="search" />
+<form class="form-inline" method="POST" action="index.php?portfolios" id="port-search">
+  <input type="text" name="search"/>
   <button type="submit" class="btn btn-sm" >
     Search
   </button>
@@ -161,12 +160,13 @@
       <th>Change</th>
       <th></th>
     </tr>
-  <?php
+<?php
     include_once '/home/ssts/simulatedstocktradingsystem/stockSearch.php';
     $stockList = stockSearch($_POST['search']);
     foreach($stockList as $stock) {
       echo "<tr>";
-      echo "<td>" . $stock["symbol"] . "</td>"; 
+      echo "<td onclick='buildGraph(\"" . $stock["symbol"] . "\")'>";
+      echo "<a href=\"#\">" . $stock["symbol"] . "</a></td>"; 
       echo "<td>" . $stock["last_trade_price"] . "</td>";
       echo "<td>" . $stock["price_change"] . "</td>";
       echo "<td><form method=\"POST\" action=\"index.php?portfolios\">";
@@ -179,22 +179,16 @@
   ?>
   </table>
 </div>
-<p>
- <?php 
-/*
-$numShares=$_POST['numShares'];
-  if (is_numeric($numShares))
-    echo "is_numeric=true\n";
-  else
-    echo "is_numeric=false\n";
 
-  echo 'selectStock:' . $_POST['selectStock'] . "\n"; 
-  echo 'buyStock:' . $_POST['buyStock'] . "\n"; 
-  echo 'numShares:' . $_POST['numShares'] . "\n"; 
-  */  
-  ?>
-</p>
-
+<div id="dialog" >
+  <img id="graph" src="" alt=""/>
+</div>
+  <script type="text/javascript">
+    function buildGraph(stock) {
+      document.getElementById("graph").src="CurrentGraph.php?ticker="+stock;
+      $("#dialog").dialog({width: 550});
+    } 
+  </script>
 </div> <!-- End of Rightbox -->
 
 <!-- Container for Center Box -->

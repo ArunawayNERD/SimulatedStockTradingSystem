@@ -1,5 +1,5 @@
 <h2>Past Competitions</h2>
-    <table class="table">";
+    <table class="table">
       <tr>
         <th>Competition</th>
         <th>Creator</th>
