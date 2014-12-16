@@ -1,65 +1,82 @@
-This provides documentation for the methods in the Logging engine php file
+This provides documentation for the files in the historical_upload folder
 
-The logging engine is set up in object oriented fassion,so a LoggingEngine
-object will have to be created before the methods can be used.
+The historical_upload folder is comprised of 3 files and 2 folders that are used to
+gather the data necessary for the historcial functions of the SSTS application to work. 
 
-In order for logging to accessiable to a php file; the php file must include the LoggingEngine.php file
+File Name:		stockpull.php
+File Description: 	This class calls out to the yahoo historical
+			stock data download link and retrieves a .csv
+			file with stock data for the date range selected.
+			The stock tickers are read from the dbstocks.txt
+			file and each stock has its .csv file is saved
+			individually.
 
+File Name: 		histparse.php
+File Description: 	This class reads the files created by stockpull.php
+			(which should be in a folder called “files”) and 
+			modifies them in such a way that eliminates 
+			repetitive information while appending the ticker 
+			at the end of each line. This allows for easy entry
+			into a table. 
 
+File Name:		dbstocks.txt
+File Description:	This file contains a list of the tickers for each
+			stock that is available in the SSTS function. 
+			stockpull.php reads from this file.
 
+Folder Name:		files
+Folder Description:	This folder is originally empty but will be
+			populated with the raw, stock data .csv files
+			grabbed by stockpull.php
 
-Method Name:		logStockDataUpdate
-Method Discription: 	Writes a message to the loog file that stock data
-			was updated.
-Method Paramaters: 	None
+Folder Name:		historical
+Folder Description	This folder is originally empty butt will be
+			populated with parsed, optimized data .csv
+			files modified by the histparse.php method.
 
+Populating the Historical Database:
 
-Method Name:		logWhatIfScenario
-Method Discription:	Writes a message to the log file at a user created
-			a What-If.
-Method Paramaters: 	1) user - The user who create the What-If senerio 
+1)	Ensure that there is a suitable table in the database that 
+	will act as an intermediary between the stock data load file 
+	and the history table. Only three fields of data are relevant 
+	and these will be marked with the NOT NULL flag in order to 
+	ensure its existence. This intermediary must contain the 
+	following fields:
+		date VARCHAR(10) NOT NULL, 
+		open int, 
+		high int, 
+		low int, 
+		close VARCHAR(10) NOT NULL, 
+		volume int, 
+		adj int, 
+		name VARCHAR(5) NOT NULL
 
+2)	Ensure that in the historical_upload directory, there are 
+	3 files (stockpull.php, histparse.php, dbstocks.txt) and 
+	2 folder (files, historical). 
 
-Method Name:		logUserLogin
-Method Discription: 	Writes a message to the log file that a 
-			user logged on.
-Method Paramaters: 	1) user - The user who logged on
+3)	First execute the stockpull.php file. This will populate 
+	the files folder with individual, stock .csv files. 
+	The process should take no longer than half an hour. 
 
+4)	Once the data has been pulled, execute the histparse.php 
+	file. This will populate the historical folder.
 
-Method Name: 		logUserRegistration
-Method Discription: 	Writes a message to the log file that a new 
-			account was created.
-Method Paramaters:	1) user - The name/id of the new account created
+5)	Once all files have been modified, move into the historical
+	folder and execute the following command:
+		Cat *.csv > load.csv
+	This will combine all the files into one large .csv file.
 
+6)	Load the data from the load.csv file into the intermediary 
+	table mentioned above. This will sort all the data for you, 
+	even the unnecessary. The command should look similar to:
+		LOAD DATA LOCAL INFILE ‘load.csv’ 
+		INTO TABLE IntermediaryTableName 
+		FIELDS TERMINATED BY ‘,’;
 
-Method Name: 		logPortCreation
-Method Discription: 	Write a message to the log file that portfolio
-			was created.
-Method Paramaters: 	1) user - the user who created a portfolio
+7)	Load the data from the date, close and name columns from
+	the intermediary into the history table. 
+	The command should look similar to:
+		INSERT IGNORE INTO history(symbol,trade_date,closing_price) 
+		SELECT name, date, close FROM IntermediaryTableName;
 
-
-Method Name:		logTransaction
-Method Discription:	Writes a message to the log file that a transaction
-			took place or failed.
-Method Paramaters:	1) user - The user who did the transaction
-			2) boolSuccessOrFail (boolean) - set to true if the
-				transaction was successful. false otherwise.
-
-			3) boolBuyOrSell (boolean) - set to true if the 
-				transation bought stocks. False if the
-				transtion sold stock.
-
-			4) strItems (string) - string containg the items 
-				bought or sold.
-
-
-Method Name:		logCompActivity
-Method Discription: 	Writes a message to the log file that a competition
-			was created or deleated.
-Method Paramaters: 	1) user - The  user who is createding / deleting a 
-				competition.
-
-
-Method Name 		logMessage
-Method Discription: 	Write a message to the log file
-Method Paramaters: 	1) msg (String) - the message to be written
