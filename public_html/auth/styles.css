@@ -12,6 +12,7 @@ body {
 }
 
 .content {
+   overflow: hidden;
    padding: 60px 40px;
    padding-bottom: 60px;
    width: 100%;

@@ -3,7 +3,11 @@
 <div class="col-md-9">
 <div class="row">
 <div class="col-md-4">
-<h2>Competition </h2>
+<h2>Competition 
+  <?php
+    echo "(Rank: " . getStanding($cid, $uid) . ")";
+  ?>
+</h2>
   <h3> 
     <?php
       echo "Cash: " . sprintf("$%.2f" ,

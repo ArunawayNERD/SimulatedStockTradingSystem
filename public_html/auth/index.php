@@ -52,7 +52,7 @@
          </ul>
 	 <ul class="nav navbar-nav navbar-right">
 	    <li class="navbar-text visible-md visible-lg"><?php echo 'Welcome ' . $_SESSION['username'];?></li>
-		<li><a href="User_Guide.docx">Help</a></li>
+		<li><a href="User_Guide.pdf">Help</a></li>
 	    <li><form method="post" action="logout.php">
 	       <button type="submit" value="Log out" class="btn btn-default navbar-btn">Log out</button>
 	       </form></li>
