@@ -104,7 +104,7 @@ function setActivePortfolio($uid, $name)
 	{
 		$mysqli->close();
 
-		return 0;
+		return -1;
 	}
 
 	//if the uid is in the table set the active portfolio
@@ -151,7 +151,7 @@ function addStockAmount($uid, $name, $symbol, $num)
 //	echo("test</br>");
 	if($num < 1)
 	{
-		return 0;
+		return -2;
 	}
 
 	$currentTotal = 0;
@@ -290,7 +290,7 @@ function removeStockAmount($uid, $name, $symbol, $num)
 	{
 		$mysqli->close();
 
-		return 0;
+		return -4;
 	}
 
 	if($newNum == 0) //if the new total is 0 delete from the table
@@ -347,7 +347,7 @@ function deletePortfolio($uid, $name)
 		$request->close();
 		$mysqli->close();
 
-		return 0;
+		return -1;
 	}
 	
 	$request->close();//close the previous request so it doesnt interfere
