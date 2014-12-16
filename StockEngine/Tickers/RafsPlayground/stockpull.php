@@ -4,10 +4,12 @@
 
    This php file will gather historical data from the yahoo api and
    store each file under the stock ticker later populate the history db.
+   a,b,c = latest month, day, year
+   d,e,f = desired start month, day, year
 */
 
   $linkstart = "http://real-chart.finance.yahoo.com/table.csv?s=";
-  $linkend   = "&a=10&b=19&c=2004&d=10&e=26&f=2014&g=d&ignore=.csv";
+  $linkend   = "&a=12&b=11&c=2014&d=11&e=26&f=2014&g=d&ignore=.csv";
 
   $dlink = curl_init();
   curl_setopt($dlink, CURLOPT_RETURNTRANSFER, 1);
