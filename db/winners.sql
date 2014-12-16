@@ -9,11 +9,11 @@ create table winners (
   uid int not null,
   creator varchar(40) not null,
   top1 varchar(40),
-  top1value int,
+  top1value float,
   top2 varchar(40),
-  top2value int,
+  top2value float,
   top3 varchar(40),
-  top3value int,
+  top3value float,
   constraint competitions_PK primary key (cid)
 
 );

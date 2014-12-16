@@ -66,26 +66,54 @@
 </button>
 </div>
 
-<!-- clicking the button shows the set active portfolio modal -->
 <div class="side-button">
-<button class="btn btn-primary btn-small" id="toggleBtn3" data-toggle="modal" data-target="#activeModal"> 
-  Set active Portfolio
-</button>
+<form method="POST" action="index.php?portfolios" class="form-inline" role="form">
+   <div class="form-group">
+   <select name="active" class="form-control">
+    <?php
+      echo "<option selected=\"selected\">";
+      echo $_SESSION["active_portfolio"] . "</option>";
+      $portfolios = getInactiveUserPortfolios($uid);
+      foreach($portfolios as $port) {
+        echo "<option value=\"" . $port[0] . "\">";
+	echo $port[0];
+	echo "</option>\n";
+      }
+    ?>
+   </select>
+   </div>
+   <input type="submit" value="Set Active" class="btn btn-primary" />
+</form>
 </div>
+
+<!-- clicking the button shows the rename portfolio form -->
+<div class="side-button">
+<button class="btn btn-primary btn-small" id="toggleBtn4" 
+  data-toggle="modal" data-target="#renameSelection"> 
+  Rename Portfolio
+</button>
+</div> <!-- End of Rename button div -->
+
+<!-- clicking the button shows the delete portfolio form -->
+<div class="side-button">
+<button class="btn btn-primary btn-small" id="toggleBtn2" data-toggle="modal" data-target="#deleteModal"> 
+  Delete portfolio 
+</button>
+</div> <!-- End of Delete Portfolio button div -->
 
 <div class="dropdown" id="sidebar-colp">
   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-    Portfolio
+    Portfolios
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
  <?php  
       // emphasize the active portfolio
-	echo "<li role='presentation'><a href='' role='menuitem'><em><span style='float:left;width:50%;'>" . $_SESSION['active_portfolio']. "</span><span style='float:right;width:50%;'>$" . sprintf("%.2f",$active_cash) . "</span></em></a></li>\n";
+	echo "<li role='presentation'><em><span style='float:left;width:50%;'>" . $_SESSION['active_portfolio']. "</span><span style='float:right;width:50%;'>$" . sprintf("%.2f",$active_cash) . "</span></em></li>\n";
       // display the inactive portfolios 
     for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
-      echo "<li role='presentation'><a href='' role='menuitem'><span style='float:left;width:50%;'>" . $inactivePortfolios[$i][0] . "</span><span style='float:right;width:50%;'>$" . 
-      sprintf("%.2f",$inactivePortfolios[$i][1]) . "</span></a></li>\n";
+      echo "<li role='presentation'><span style='float:left;width:50%;'>" . $inactivePortfolios[$i][0] . "</span><span style='float:right;width:50%;'>$" . 
+      sprintf("%.2f",$inactivePortfolios[$i][1]) . "</span></li>\n";
       }
 ?>   
   </ul>
@@ -98,11 +126,11 @@
 
 <?php  
       // emphasize the active portfolio
-	echo "<li class='sidebar-active'><a href=''><em><span style='float:left;width:50%;'>" . $_SESSION['active_portfolio']. "</span><span style='float:right;width:50%;'>$" . sprintf("%.2f",$active_cash) . "</span></em></a></li>\n";
+	echo "<li class='sidebar-active'><em><span style='float:left;width:50%;'>" . $_SESSION['active_portfolio']. "</span><span style='float:right;width:50%;'>$" . sprintf("%.2f",$active_cash) . "</span></em></li>\n";
       // display the inactive portfolios 
     for($i=0; $i<sizeOf($inactivePortfolios); $i++) {
-      echo "<li><a href=''><span style='float:left;width:50%;'>" . $inactivePortfolios[$i][0] . "</span><span style='float:right;width:50%;'>$" . 
-      sprintf("%.2f",$inactivePortfolios[$i][1]) . "</span></a></li>\n";
+      echo "<li><span style='float:left;width:50%;'>" . $inactivePortfolios[$i][0] . "</span><span style='float:right;width:50%;'>$" . 
+      sprintf("%.2f",$inactivePortfolios[$i][1]) . "</span></li>\n";
       }
 ?>
 </ul>
@@ -116,15 +144,15 @@
 <h3>Buy Shares</h3>
 
 <!-- search bar -->
-<form class="form-inline" method="POST" action="index.php?portfolios">
-  <input type="text" name="search" />
+<form class="form-inline" method="POST" action="index.php?portfolios" id="port-search">
+  <input type="text" name="search"/>
   <button type="submit" class="btn btn-sm" >
     Search
   </button>
 </form>
 
 <!-- selection menu of stocks, filtered by the above search menu --> 
-<div id="port-stocks">
+<div class="port-stocks">
   <table class="table">
     <tr>
       <th>Ticker</th>
@@ -132,12 +160,13 @@
       <th>Change</th>
       <th></th>
     </tr>
-  <?php
+<?php
     include_once '/home/ssts/simulatedstocktradingsystem/stockSearch.php';
     $stockList = stockSearch($_POST['search']);
     foreach($stockList as $stock) {
       echo "<tr>";
-      echo "<td>" . $stock["symbol"] . "</td>"; 
+      echo "<td onclick='buildGraph(\"" . $stock["symbol"] . "\")'>";
+      echo "<a href=\"#\">" . $stock["symbol"] . "</a></td>"; 
       echo "<td>" . $stock["last_trade_price"] . "</td>";
       echo "<td>" . $stock["price_change"] . "</td>";
       echo "<td><form method=\"POST\" action=\"index.php?portfolios\">";
@@ -150,22 +179,16 @@
   ?>
   </table>
 </div>
-<p>
- <?php 
-/*
-$numShares=$_POST['numShares'];
-  if (is_numeric($numShares))
-    echo "is_numeric=true\n";
-  else
-    echo "is_numeric=false\n";
 
-  echo 'selectStock:' . $_POST['selectStock'] . "\n"; 
-  echo 'buyStock:' . $_POST['buyStock'] . "\n"; 
-  echo 'numShares:' . $_POST['numShares'] . "\n"; 
-  */  
-  ?>
-</p>
-
+<div id="dialog" >
+  <img id="graph" src="" alt=""/>
+</div>
+  <script type="text/javascript">
+    function buildGraph(stock) {
+      document.getElementById("graph").src="CurrentGraph.php?ticker="+stock;
+      $("#dialog").dialog({width: 550});
+    } 
+  </script>
 </div> <!-- End of Rightbox -->
 
 <!-- Container for Center Box -->
@@ -174,14 +197,6 @@ $numShares=$_POST['numShares'];
 <?php
    echo "<h1>".$_SESSION['active_portfolio']."</h1>";
 ?>
-
-<!-- clicking the button shows the rename portfolio form -->
-<div>
-<button class="btn btn-primary btn-small" id="toggleBtn4" 
-  data-toggle="modal" data-target="#renameSelection"> 
-  Rename Portfolio
-</button>
-</div>
  
 <div class="port-stats">
 <?php
@@ -241,12 +256,6 @@ $numShares=$_POST['numShares'];
 ?>
 </table>
 
-<!-- clicking the button shows the delete portfolio form -->
-<div>
-<button class="btn btn-primary btn-small" id="toggleBtn2" data-toggle="modal" data-target="#deleteModal"> 
-  Delete portfolio 
-</button>
-</div>
 </div> <!-- End of Center Box div -->
 
 </div> <!-- End of Overall Container -->

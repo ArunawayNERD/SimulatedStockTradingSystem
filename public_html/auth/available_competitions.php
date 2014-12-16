@@ -1,7 +1,6 @@
-
 <button class="btn btn-primary btn-small" data-toggle="modal" 
   data-target="#createCompetitionsModal"> 
-  Create Competitions 
+  Create Competition
 </button>
 
 <h2> Available Competitions </h2>
@@ -12,6 +11,7 @@
       <th>Start</th>
       <th>End</th>
       <th>Buy-in</th>
+      <th></th>
     </tr>
     <?php
       $comps = listAvailableComps($uid, $portfolio); 
@@ -23,7 +23,7 @@
 	echo "<td>" . $comp['end_time'] . "</td>";
 	echo "<td>" . sprintf("$%.2f",$comp['buyin']) . "</td>";
         echo "<td><form method=\"POST\" action=\"index.php?competitions\">";
-	echo "<input type=\"submit\" value=\"Join\" />";
+	echo "<input type=\"submit\" value=\"Join\" class=\"form-control\"/>";
 	echo "<input type=\"hidden\" name=\"joinComp\" ";
 	echo "value=\"" . $comp["cid"]  . "\" />";
 	echo "</form></td>";

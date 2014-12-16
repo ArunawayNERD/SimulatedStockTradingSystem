@@ -17,6 +17,8 @@
     . 'CompetitionEngine.php';
   include_once '/home/ssts/simulatedstocktradingsystem/portfolios/'
     . 'PortfolioEngine.php';
+  include_once '/home/ssts/simulatedstocktradingsystem/transactions/'
+    . 'TransactionEngine.php';
   
   
   $uid = $_SESSION['id'];
@@ -43,7 +45,6 @@
       echo "Competition : " . $status;
   }
  
-  echo "joinComp = " . $_POST['joinComp'];
   //join a competition
   if($_POST['joinComp']!='') {
     $status = addUser($_POST['joinComp'], $uid, $portfolio);
@@ -53,12 +54,27 @@
   if($_POST['leaveComp']!='') {
     leaveComp($_POST['leaveComp'], $uid);
   }
+  // get competition portfolio
+  if(isCompeting($uid, $portfolio))
+    $compPortfolio = getCompPortfolio($uid, $portfolio);
+
+  //buy stock
+  $numSharesBuy=$_POST['numSharesBuy'];
+  if(ctype_digit($numSharesBuy) && $numSharesBuy>0)
+    buyStock($uid, $compPortfolio, $_POST['buyStock'], $numSharesBuy); 
+  
+  // sell a stock 
+  if(ctype_digit($_POST['numSharesSell']) && $_POST['numSharesSell']>0) {
+    sellStock($uid, $compPortfolio, 
+      $_POST['sellMe'], $_POST['numSharesSell']); 
+  }
 ?>
 
 <h1>Competitions: <?php echo $portfolio; ?></h1>
-
-<form method="POST" action="index.php?competitions">
-  <select name="portfolio">
+<div class="comp-activeform">
+<form method="POST" action="index.php?competitions" class="form-inline" role="form">
+   <div class="form-group">
+   <select name="portfolio" class="form-control">
     <?php
       echo "<option selected=\"selected\">";
       echo $portfolio . "</option>";
@@ -69,10 +85,11 @@
 	echo "</option>\n";
       }
     ?>
-    <input type="submit" value="Select Portfolio" />
-  </select>
+   </select>
+   </div>
+   <input type="submit" value="Select Active Portfolio" class="btn btn-default" />
 </form>
-
+</div>
 
 <?php
   $cid = isCompeting($uid, $portfolio);
@@ -92,7 +109,9 @@
 
 <script type="text/javascript">
   $(function() {
-    $( ".datepicker" ).datepicker({dateFormat: "yy-mm-dd"});
+    $( ".datepicker" ).datepicker({
+      dateFormat: "yy-mm-dd", minDate: "+1D"
+    });
   });
 </script>
 <?php  

@@ -388,7 +388,7 @@ function deletePortfolio($uid, $name)
 */
 function adjustPortfolioCash($uid, $name, $change)
 {
-	if(is_double($change) || is_int($change))
+	if(ctype_digit($change) || is_double($change) || is_int($change))
 		$change = (float)$change;
 
 	if(!is_float($change))
@@ -396,7 +396,6 @@ function adjustPortfolioCash($uid, $name, $change)
 
 	$oldCash = 0;
 	$newCash = 0;
-
 
 	$oldCash = getPortfolioCash($uid, $name);
 

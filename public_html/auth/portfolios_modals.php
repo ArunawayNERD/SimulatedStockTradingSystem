@@ -12,7 +12,7 @@
       </div>
       <div class="modal-body">
         <form method="post" action="index.php?portfolios">
-          <input type="text" name="newName" value="Portfolio Name" />
+          <input type="text" name="newName" value="Portfolio Name" maxlength="14"/>
           <input type="submit" value="Make New" />
         </form>
       </div>
@@ -167,7 +167,7 @@
 <?php
     echo "<form method=\"post\" action=\"index.php?portfolios\">\n";
     echo "<p>Rename " . $_POST['rename'] . " as </p>\n";
-    echo "<input type=\"text\" name=\"renamedName\" />\n";
+    echo "<input type=\"text\" name=\"renamedName\" maxlength=\"14\"/>\n";
     echo "<input type=\"submit\" value=\"Rename\" />";
     echo "<input type=\"hidden\" name=\"changeName\" "
       . "value=\"" . $_POST['rename'] . "\" />";
@@ -198,7 +198,7 @@
       <div class="modal-body">
  
  <form method="POST" action="index.php?portfolios">
-    <input type="number" name="numSharesBuy" class="form-control"/>
+    <input type="number" name="numSharesBuy" class="form-control" min="0" step="1"/>
     <input type="hidden" name="buyStock" 
       value="<?php echo $_POST['selectStock'] ?>" />
     <button type="submit" class="btn btn-default">
@@ -232,7 +232,7 @@
       <div class="modal-body">
  
  <form method="POST" action="index.php?portfolios">
-    <input type="number" name="numSharesSell" class="form-control"/>
+    <input type="number" name="numSharesSell" class="form-control" min="0" step="1"/>
     <input type="hidden" name="sellMe" 
       value="<?php echo $_POST['sellStock'] ?>" />
     <button type="submit" class="btn btn-default">

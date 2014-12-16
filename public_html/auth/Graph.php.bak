@@ -1,0 +1,61 @@
+<?php
+	require "/home/ssts/simulatedstocktradingsystem/public_html/dist/phpgraphlib/phpgraphlib.php";
+
+//	getWhatIfGraph($_GET['ticker'], $_GET['start'], $_GET['end']); 
+
+//function getWhatIfGraph($ticker, $start, $end)
+//{
+	 require '/home/ssts/simulatedstocktradingsystem/public_html/creds.php';
+
+	 $mysqli = new mysqli($host, $user, $pass, $db);
+
+	 if($mysqli->connect_error){
+	 	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+		 die($mysqli->connect_error);
+	 }
+									
+         $start = strtotime($_GET['start']);
+         $end = strtotime($_GET['end']);
+
+
+         //$request = $mysqli->prepare("select trade_date, closing_price from history where symbol=?");
+         //$request->bind_param("s", $_GET["ticker"]);
+         //$request->execute();
+
+	$result = $mysqli->query('select trade_date, closing_price from history where symbol="'.$_GET['ticker'].'"');
+
+	$count = 0;
+         while($row = $result->fetch_assoc())
+         {
+               $date = strtotime($row['trade_date']);
+
+               if($date >= $start && $date <= $end)
+	       {
+                         $values[] = $row['closing_price'];
+                         $keys[] = date("Y-m-d", $date);
+                         $count++;
+		}
+         }
+
+
+         $data = array_combine($keys, $values);
+
+	if(sizeof($data) > 150)
+	{
+		$data = array_slice($data,-150);
+		$values = array_slice($values, -150);
+	}
+
+        $graph = new PHPGraphLib(1000, 600);
+        $graph->adddata($data);
+        $graph->setTitle("Historical Prices for ". $_GET['ticker']);
+        $graph->setBars(false);
+        $graph->setLine(true);
+        $graph->setDataPoints(false);
+
+	if($count > 25)
+		$graph->setXValuesInterval(5);
+       
+       $graph->setRange((int)max($values) + 5, (int)min($values) - 5);
+       $graph->createGraph();
+

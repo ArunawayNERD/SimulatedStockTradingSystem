@@ -149,6 +149,40 @@ function buyStock($uid, $portName, $ticker, $numToBuy)
 	if($portCash < $totalCost)
 		return -4;
 
+	$mysqli = connectDB();
+
+
+	$request = $mysqli->prepare('select competition from portfolios where uid=? and name=?');
+	$request->bind_param("is", $uid, $portName);
+	$request->execute();
+	$request->bind_result($result);
+	$request->fetch();
+	$request->close();
+
+	if($result == 1)
+	{
+		//if its a competive portfolio get the cid its in.
+		$request = $mysqli->prepare('select cid from players where uid=? and compName=?');
+		$request->bind_param("is", $uid, $portName);
+		$request->execute();
+		$request->bind_result($result);
+		$request->fetch();
+		$request->close();
+	
+		//using the cid get the competion status
+		$request = $mysqli->query('select status from competitions where cid='.$result);
+
+		$result = $request->fetch_assoc();
+
+		//if the comp hasnt started they cant buy
+		if($result['status'] == 0)
+		{
+			$mysqli->close();
+			return -5;
+		}
+	}
+	$mysqli->close();
+
 	adjustPortfolioCash($uid, $portName, $totalCost *-1);
 //	echo("cash adjusted</br>");
 	$result = addStockAmount($uid, $portName, $ticker, $numToBuy);

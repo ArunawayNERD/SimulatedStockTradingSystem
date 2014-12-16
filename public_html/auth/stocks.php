@@ -59,7 +59,8 @@ $result = $conn->query("Select * from stocks;");
             <th>Last Trade Time</th></tr></thead><tbody>";
     // output data of each row
     while($row = $result->fetch_assoc()) {
-      echo "<tr id='".$row["symbol"]."'>
+      echo "<tr id='".$row["symbol"]."' 
+        onclick='buildGraph(\"" . $row["symbol"] . "\")' >
         <td>".$row["symbol"]."</td>
 	<td>".$row["name"]."</td>
         <td>".$row["last_trade_price"]."</td>
@@ -76,6 +77,15 @@ $result = $conn->query("Select * from stocks;");
 
 $conn->close();
 ?>
+<div id="dialog" >
+  <img id="graph" src="" alt=""/>
+</div>
+  <script type="text/javascript">
+    function buildGraph(stock) {
+      document.getElementById("graph").src="CurrentGraph.php?ticker="+stock;
+      $("#dialog").dialog({width: 550});
+    } 
+  </script>
 
 </div>
 </div>

@@ -1,6 +1,9 @@
 <?php
   include 'CompetitionEngine.php';
 
-  getOpponentNames(21, "Mike");
+  $pastComps = getPastComps();
 
+  foreach ($pastComps as $past) {
+    echo $past["name"];
+  }
 ?>

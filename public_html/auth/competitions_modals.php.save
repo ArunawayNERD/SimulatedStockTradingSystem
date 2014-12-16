@@ -15,45 +15,28 @@
 <!-- modal body -->
 <form method="post" action="index.php?competitions" class="form-horizontal">
  <div class="form-group">
-  <div class="col-xs-4">
-   <input type="text" name="compName" placeholder="Competition Name" class="form-control" maxlength="20"/>
-  </div>
+  <input type="text" name="compName" value="Competition Name" /> <br />
  </div>
  <div class="form-group">
-  <label for="inputStart" class="col-xs-2 control-label">Start:</label>
-  <div class="col-xs-3">
-   <input type="text" name="startDate" class="datepicker form-control" id="inputStart" /> 
-  </div>
-  <div class="col-xs-3">
+  Start: <input type="text" name="startDate" class="datepicker" /> 
   <select name="startTime" class="form-control">
     <?php
       for($i=0; $i<24; $i++)
         echo "<option value=\"$i:00\">$i:00</option>\n";
     ?>
   </select>
-  </div>
- </div>
- <div class="form-group">
-  <label for="inputEnd" class="col-xs-2 control-label">End:</label>
-  <div class="col-xs-3">
-   <input type="text" name="endDate" class="datepicker form-control" id="inputEnd" /> 
-  </div>
-  <div class="col-xs-3">
-   <select name="endTime" class="form-control">
-     <?php
-       for($i=0; $i<24; $i++)
-         echo "<option value=\"$i:00\">$i:00</option>\n";
-     ?>
-   </select>
-  </div>
- </div>
- <div class="form-group">
-   <label for="inputBuyin" class="col-xs-2 control-label">Buy-In: $</label>
-  <div class="col-xs-3">
-   <input type="number" name="buyin" class="form-control" step="0.01" min="0"/>
-  </div>
- </div>
-  <input type="submit" value="Make New" class="btn btn-default"/>
+  <br /> 
+    End: <input type="text" name="endDate" class="datepicker" /> 
+  <select name="endTime">
+    <?php
+      for($i=0; $i<24; $i++)
+        echo "<option value=\"$i:00\">$i:00</option>\n";
+    ?>
+  </select>
+  <br />
+  Buy-In:  $ <input type="text" name="buyin" />
+  <br /> 
+  <input type="submit" value="Make New" />
 </form>
 <!-- end modal body -->	
       </div>
@@ -65,7 +48,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- Modal for buying a stock -->
 <div class="modal fade"
@@ -83,7 +65,7 @@
       <div class="modal-body">
  
  <form method="POST" action="index.php?competitions">
-    <input type="number" name="numSharesBuy" class="form-control" step="1" min="0"/>
+    <input type="number" name="numSharesBuy" class="form-control"/>
     <input type="hidden" name="buyStock" 
       value="<?php echo $_POST['selectStock'] ?>" />
     <button type="submit" class="btn btn-default">
@@ -117,7 +99,7 @@
       <div class="modal-body">
  
  <form method="POST" action="index.php?competitions">
-    <input type="number" name="numSharesSell" class="form-control" step="1" min="0"/>
+    <input type="number" name="numSharesSell" class="form-control"/>
     <input type="hidden" name="sellMe" 
       value="<?php echo $_POST['sellStock'] ?>" />
     <button type="submit" class="btn btn-default">

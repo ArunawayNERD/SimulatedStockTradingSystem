@@ -10,18 +10,21 @@
    -->
    
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script type="text/javascript" src="jquery.tablesorter.min.js"></script>
-   <!--
+<!--
+  <script type="text/javascript" src="tablesorter/jquery.tablesorter.min.js"></script>
+  <link rel="stylesheet" href="tablesorter/css/theme.bootstrap.css">
+-->
+  <!--
    <script src="../dist/js/bootstrap.min.js"></script>
    -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-   <link rel="stylesheet" href="theme.blue.css">
+  <link rel="stylesheet" href="theme.blue.css">
 
   <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
 
-<script type="text/javascript" src="../dist/js/jquery-ui.min.js"></script>
+ <script type="text/javascript" src="../dist/js/jquery-ui.min.js"></script>
  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 
 
@@ -49,7 +52,7 @@
          </ul>
 	 <ul class="nav navbar-nav navbar-right">
 	    <li class="navbar-text visible-md visible-lg"><?php echo 'Welcome ' . $_SESSION['username'];?></li>
-		<li><a href="">Settings</a></li>
+		<li><a href="User_Guide.docx">Help</a></li>
 	    <li><form method="post" action="logout.php">
 	       <button type="submit" value="Log out" class="btn btn-default navbar-btn">Log out</button>
 	       </form></li>
@@ -61,7 +64,7 @@
 <div class="content">
   <?php
     $available = array("portfolios", "stocks", "portfolios", "whatif",
-    "competitions"); 
+    "competitions", "about" , "hypnotoad"); 
     $request = $_SERVER['QUERY_STRING'];
     if($request=='') {
       include 'home.php';
@@ -79,7 +82,7 @@
 <footer class="footer">
    <div class="container">
       <p class="text-muted"><small>Team UG-2 - Fall 2014 - CS 324</small></p>
-      <p class="text-muted"><small><a href="">About</a></small></p>
+      <p class="text-muted"><small><a href="?about">About</a></small></p>
    </div>
 </footer>
 
@@ -107,15 +110,15 @@
       }
    });
    </script>
-
+<!--
    <script type="text/javascript">        
       $(document).ready(function() {
          $("#stocks").tablesorter( {
-            theme: 'default'
+            theme: 'bootstrap'
          });
       });
    </script>
-
+-->
 <!-- Add fancyBox 
 <link rel="stylesheet" href="/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 <script type="text/javascript" src="/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>

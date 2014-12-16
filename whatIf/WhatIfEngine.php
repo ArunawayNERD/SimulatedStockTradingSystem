@@ -138,7 +138,7 @@ function getWhatIf($ticker, $year, $month, $day, $eYear, $eMonth, $eDay, $numSha
 		}
 	}
 
-	$results["histDate"] = $date2; //using date2 so the two dates are in the same format
+	$results["histDate"] = $date1; //using date2 so the two dates are in the same format
 	$request->close();
 
 	$results["histPrice"] = $result;
@@ -193,11 +193,15 @@ function getWhatIf($ticker, $year, $month, $day, $eYear, $eMonth, $eDay, $numSha
 		}
 
 		$request->close();
+	 	$mysqli->close();
 
+		$results["endDate"] = $eDate1;
 		$results["endPrice"] = $result;
-		$results["endDate"] = $eDate2;
+
 		$results["endTotal"] = $results["endPrice"] * $results["numShares"];
 		$results["profit"] = $results["endTotal"] - $results["histTotal"];
+
+		//$results['graph'] = getWhatIfGraph($ticker, $date1, $eDate1);
 
 	}
 	//log what if
@@ -206,3 +210,74 @@ function getWhatIf($ticker, $year, $month, $day, $eYear, $eMonth, $eDay, $numSha
 
 	return $results;
 }
+
+/*function getWhatIfGraph($ticker, $start, $end)
+{
+	//require_once "/home/ssts/simulatedstocktradingsystem/public_html/dist/phpgraphlib/phpgraphlib.php";
+
+	$mysqli = connectDataBase();
+	
+	$start = strtotime($start);
+	$end = strtotime($end);
+
+	echo($start. '</br>');
+	echo($end. '</br>');
+	echo($ticker. getType($ticker). "</br>");
+	
+	$request = $mysqli->prepare("select trade_date, closing_price from history where symbol=?");
+
+	echo(getType($request).'</br>');
+
+	$request->bind_param("s", $ticker);
+		echo(getType($request).'</br>');
+
+	$request->execute();
+		echo(getType($request).'</br>');
+
+	$result = $request->get_result();
+	echo(getType($request).'</br>');
+
+	echo(getType($result));
+	$count = 0;
+	while($row = $result->fetch_assoc())
+	{
+		$date = strtotime($row['trade_date']);
+//		if($date >= $start && $date <= $end)
+		{
+			$values[] = $row['closing_price'];
+			$keys[] = date("Y-m-d", $date);
+			$count++;
+		}
+	}
+
+//	echo(print_r($keys, true));
+
+	$data = array_combine($keys, $values);
+
+	echo(print_r($data, true));
+	/*$modValue = $count / 25; //determine how many rows to skip before using a data point so we only have 25.
+
+	if($modValue >= 1)
+	{
+		foreach($data as $item)
+		{
+			if((int)($i / $modValue) != 0)
+			{
+	
+			}
+		}
+	}
+
+	 $graph = new PHPGraphLib(800, 400);
+	 $graph->addData($data);
+	$graph->setTitle("Historical Prices for");
+	 $graph->setBars(false);
+	 $graph->setLine(true);
+	 $graph->setDataPoints(false);
+	// $graph->setDataPointColor('maroon');
+	 //$graph->setDataValues(true);
+	 //$graph->setDataValueColor('maroon');
+	//$graph->createGraph();
+	return $graph;
+
+}*/	
