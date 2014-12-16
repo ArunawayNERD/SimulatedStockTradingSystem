@@ -217,12 +217,21 @@ function isCompEnded($cid)
 		return true;
 	else
 		return false;
-
 }
 
 /*
 	Handles a user leaving a compeittion
 
+	$cid - the cid for the competition to leave
+	$uid - the uid for the user who is leaving
+
+	return  -1 if the competition is in progress
+		-2 if the user could not be removed from the comp
+		-3 if the user does not have a portfolio in this comp
+		-4 if the entered cid or uid is not numeric
+
+		1 if the user left secessfully
+		2 if the user is the owner. ended the comp
 */
 function leaveComp($cid, $uid)
 {
@@ -249,8 +258,7 @@ function leaveComp($cid, $uid)
 	if($uid == $settings["uid"])
 	{
 		endComp($cid);
-
-		$mysqli->query("delete from winners where cid=$cid");
+		$mysqli->close();
 		return 2;
 	}
 
@@ -272,6 +280,17 @@ function leaveComp($cid, $uid)
 	return 1;
 
 }
+
+/*
+	removes a single user from a competition 
+
+	$cid the competition id to remove from
+	$uid the user id to remove;
+	$pName - the name of the source portfolio
+	$vName - the name of the virtual portfolio
+
+	returns 1 if the user was removed
+*/
 
 function removeUser($cid, $uid, $pName, $vName)
 {
@@ -306,7 +325,14 @@ function removeUser($cid, $uid, $pName, $vName)
 	}
 	return 1;
 }
+/*
+	starts a competition. if the owner is the only one it ends the competition. 
 
+	$cid - the competition id to start
+
+	returns	-1 if the owner is the only player
+		 1 if the competition was started successfully
+*/
 function startComp($cid)
 {
 	$mysqli = connectDB();
@@ -320,10 +346,9 @@ function startComp($cid)
 	if($results->num_rows < 2) //if the owner is the only player
 	{
 		$request->close();
+		$mysqli->close();
 		endComp($cid);
 
-		$mysqli->query("delete from winnners where cid=$cid");
-		$mysqli->close();
 
 		return -1;
 	}
@@ -338,13 +363,24 @@ function startComp($cid)
 
 	return 1;
 }
+/*
+	ends a compeitition
 
+	steps to end	1 move current competiton row into winners
+			2 delete the player rows
+			3 delete the copetion
+			4 remove all the users (delete the vertuial portfolios)
+			5 if the owner was the only person delete the winner row
+	
+	$cid the competition id to end
+*/
 function endComp($cid)
 {
 	$mysqli = connectDB();
 	
 	$top3 = getTopThree($cid);
-	
+
+	$singlePlayer = false;
 	//move the current comp status
 	$mysqli->query('insert into winners (cid, name, start_time, end_time, buyin, uid, creator) select cid, name, start_time, end_time, buyin, uid, creator from competitions where cid='.$cid);
 	
@@ -352,8 +388,10 @@ function endComp($cid)
 		$top3[0] = array(" ", 0);
 
 	if(!isset($top3[1]))
+	{
 		$top3[1] = array(" ", 0);
-	
+		$singlePlayer = true;
+	}
 	if(!isset($top3[2]))
 		$top3[2] = array(" ", 0);
 	
@@ -379,6 +417,12 @@ function endComp($cid)
 
 	foreach($players as $row)
 		removeUser($row['cid'], $row['uid'], $row['pname'], $row['compName']);
+
+	if($singlePlayer)
+	{
+		$mysqli->query("delete from winners where cid=$cid");
+
+	}
 	$mysqli->close();
 
 }
@@ -462,6 +506,21 @@ function listCreatedComps($uid)
 	return $endedComps;
 }*/
 
+/*
+	Get an array containing the competition information for competitions 
+	(waiting and ongoing) that the user is currently in.
+
+	$uid  the users id
+
+	returns a 2-D assoc array of values where one row in the array is per compeition
+
+	keys	name - the compeititon name
+		start_time - the time the competition starts
+		end_time - the time when the competition end
+		buyin - the buyin amount
+		creator - the owners portfolio used to create the comp
+		cid - the competitions id
+*/
 function listUsersCurrentComps($uid)
 {
 	$mysqli = connectDB();
@@ -469,12 +528,6 @@ function listUsersCurrentComps($uid)
 	$comp = array();
 	
 	$counter = 0;
-
-//	$results = $mysqli->query('select cid, name, start_time, end_time, buyin, creator from competitions where cid in (select cid from players where pname in (select name from portfolios where uid='.$uid.' and competition=0)) and (status=0 or status=1)');
-
-
-	//$results = $mysqli->query('select * from competitions where cid in (select cid from players where pname in (select name from portfolios where uid='.$uid.' and competition=0) and active=0) and (status=0 or status=1)');
-
 
 	$results= $mysqli->query("select * from competitions where cid in (select cid from players where uid=$uid and active=1)");
 
@@ -484,35 +537,32 @@ function listUsersCurrentComps($uid)
 
 		$counter = $counter + 1;
 	}
-/*
-	$AllComps = listAllUsersComps($uid);
-	$currentComps;
-
-	if($AllComps == -1)
-		return -1;
-
-	$counter = 0;
-	foreach($AllComps as $cid)
-	{
-		if(!isCompEnded($cid))
-		{
-			$currentComps[$counter] = $cid;
-			$counter = $counter + 1;
-		}
-	}*/
-
 	return $comp;
 }
 
+
+/*
+	lists all the competitions that a user could join with a portfolio.
+
+	$uid - the users id
+	$pname - the users portfolio to check with
+
+	returns a 2D array where each row is a available compeition and the columns are an 
+		assoc array holding  hold the competition info. 
+
+	keys	name - the compeititon name
+		start_time - the time the competition starts
+		end_time - the time when the competition end
+		buyin - the buyin amount
+		creator - the owners portfolio used to create the comp
+		cid - the competitions id
+*/
 function listAvailableComps($uid, $pname)
 {
 	$mysqli = connectDB();
 
 	$comp = array();
 	$counter = 0;
-
-//$result = $mysqli->query("select cid, name, start_time, end_time, buyin, creator from competitions where cid in (select cid from players where pname not in (select name from portfolios where uid=$uid and competition=0)) and status=0");
-
 
 	$result = $mysqli->query("select * from competitions where status=0 and buyin < 
 	(select cash from portfolios where uid=$uid and name=\"$pname\") and cid 
@@ -522,48 +572,22 @@ function listAvailableComps($uid, $pname)
 	{
 		$comp[$counter] = array("name" => $row["name"], "start_time" => $row["start_time"], "end_time" => $row["end_time"], "buyin" => $row["buyin"], "creator" => $row["creator"], "cid" => $row["cid"]);
 
-	/*	$comp[$counter]["name"] = $row["name"];
-		$comp[$counter]["start_time"] = $row["start_time"];
-		$comp[$counter]["end_time"] = $row["end_time"];
-		$comp[$counter]["buyin"] = $row["buyin"];
-		$comp[$counter]["creator"] = $row["creator"];
 
-	*/
 		$counter = $counter + 1;
 	}
-// 	$result = $mysqli->query('select cid from competitions where status=0');
-
-/*	while($row = $result->fetch_assoc())
-	{
-		$cid = $row["cid"];
-		
-		$players = getCompPlayers($cid)
 	
-		$inComp = 0;
-
-		foreach($players as $player)
-		{
-			$tempUid = $player->getUid();
-
-			if($tempUid == $uid)
-			{
-				$inComp = 1;
-				break;
-			}
-		}
-
-		if(!$inComp)
-		{
-		//	$availableComps[$counter] = $cid;
-		//	$counter = $counter + 1;
-
-			$availableComps[] = $cid;
-		}
-	}
-*/
 	return $comp;
 }
 
+
+/*
+	get a list of the players in a competition
+
+	$cid - the competitions id
+
+	returns -1 if there is no one in the competition
+		1D array of player objects;
+*/
 function getCompPlayers($cid)
 {
 	$players = array();
@@ -584,6 +608,22 @@ function getCompPlayers($cid)
 	return $players;
 }
 
+/*
+	gets the settings for a competition
+
+	$cid the competition id
+
+	returns -1 if the cid doesnt exist in the table
+		1D assoc array of values holding the competition settings
+
+	keys	name - the compeititon name
+		start_time - the time the competition starts
+		end_time - the time when the competition end
+		buyin - the buyin amount
+		creator - the owners portfolio used to create the comp
+		cid - the competitions id
+	
+*/
 function getCompSettings($cid)
 {
 	$mysqli = connectDB();
@@ -601,6 +641,19 @@ function getCompSettings($cid)
 	return $results->fetch_assoc();
 }
 
+
+/*
+	sorts the players in a competition
+
+	$cid - the competition id
+
+	returns -1 if the competition has no players
+		a 2D array where row coresponds to rank. 
+
+	columns	[][0] - source portfolio name
+		[][1] - value of the competition portfolio
+		[][2] - the users uid
+*/
 function sortPlayersByRank($cid)
 {
 	$players = getCompPlayers($cid);
@@ -632,6 +685,15 @@ function sortPlayersByRank($cid)
 	return ($ranks);
 }
 
+/*
+	gets the rank (standing) of a user in a compeition
+
+	$cid - the competitions id
+	$uid - the user id
+
+	returns 0 if the cid isnt valid
+		$rank - the users current rank in the comp
+*/
 function getStanding($cid, $uid)
 {
 	$ranks = sortPlayersByRank($cid);
@@ -647,36 +709,21 @@ function getStanding($cid, $uid)
 		else
 			$rank++;
 	}
-/*	foreach($ranks as $key =>$row)
-	{
-		if($isUserIn == 1)
-			break;
-		
-		if($row[0]->getUid() == $uid)
-			$isUserIn = 1;
-	}
-
-	if($isUserIn == 0)
-		return -1;
-
-	foreach($ranks as $key => $row)
-	{
-
-		$userValue = $row[1];
-
-		if($userValue < $lastRankValue)
-		{
-			$curRank = $curRank + 1;
-			$lastRankValue = $userValue;
-		}
-
-		if($row[0]->getUid() == $uid)
-			break;
-	}
-*/
+	
 	return $rank;
 }
 
+/*
+	Gets the top 3 players in a compeition based on value
+
+	$cid - the competitions cid
+
+	returns a 2D array of up to 3 rows.
+
+	columns	[][0] - source portfolio name
+		[][1] - value of the competition portfolio
+		[][2] - the users uid
+*/
 function getTopThree($cid)
 {
 	$ranks = sortPlayersByRank($cid);
@@ -690,22 +737,7 @@ function getTopThree($cid)
 	$curRank = 0;
 
 	$places = array_slice($ranks, 0, 3);
-/*	foreach($ranks as $key => $row)
-	{
-
-		$userValue = $row[1];
-
-		if($userValue < $lastRankValue)
-		{
-			$curRank = $curRank + 1;
-			$lastRankValue = $userValue;
-		}
-		if($curRank > 3)
-			break;
-
-		$places[$curRank][] = $row[0]->getUid();
-	}
-*/
+	
 	return $places;
 }
 
@@ -759,6 +791,18 @@ function isCompeting ($uid, $pname) {
   $mysqli->close();
 }
 
+/*
+	get the portfolios used by a user in a competition
+
+	$cid - the competition id
+	$uid - the user id
+
+	returns 0 if the user is not in that competition 
+		1D assoc array containing the portfolio information
+
+	keys	pname - the source portfolio used
+		compName - the name of the virtual portfolio
+*/
 function getCompPortfolios($cid, $uid)
 {
 	$mysqli = connectDB();
@@ -803,7 +847,6 @@ function getOpponentNames ($uid, $pname) {
 
     output: an array containing opponent stocks 
 */
-
 function getOpponentStocks ($uid, $pname) {
   $mysqli=connectDB();
   $compPort = getCompPortfolio($uid, $pname);
